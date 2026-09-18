@@ -1,3 +1,7 @@
-Flask
-requests
+streamlit
 numpy
+pandas
+folium
+pydeck
+opencv-python-headless
+Pillow
