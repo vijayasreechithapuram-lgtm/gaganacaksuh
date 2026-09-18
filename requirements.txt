@@ -5,3 +5,4 @@ folium
 pydeck
 opencv-python-headless
 Pillow
+reportlab
