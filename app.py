@@ -860,9 +860,18 @@ def render_2d_leaflet_component(
 # =============================================================================
 def render_landing_page():
     # 0. Check query params or session state navigation
-    if "page" in st.query_params and st.query_params["page"] in ["auth", "auth_gateway", "login"]:
-        st.session_state["page"] = "auth_gateway"
-        st.rerun()
+    if "page" in st.query_params:
+        target = st.query_params["page"]
+        if target in ["dashboard", "analysis", "command", "main"]:
+            profile = authenticate_user("jury@sih2026.in", "jury123")
+            if profile:
+                st.session_state["authenticated"] = True
+                st.session_state["user_profile"] = profile
+                st.session_state["page"] = "dashboard"
+                st.rerun()
+        elif target in ["auth", "auth_gateway", "login"]:
+            st.session_state["page"] = "auth_gateway"
+            st.rerun()
 
     # 1. Remove parent padding and enforce true full-screen breakout
     st.markdown("""
@@ -889,6 +898,7 @@ def render_landing_page():
             margin: 0 !important;
             padding: 0 !important;
             z-index: 1 !important;
+            pointer-events: none !important;
         }
         /* Native Streamlit Overlay Buttons with High Z-Index */
         div.st-key-btn_top_gateway {
@@ -896,6 +906,7 @@ def render_landing_page():
             top: 2rem !important;
             right: 2.5rem !important;
             z-index: 999999 !important;
+            pointer-events: auto !important;
         }
         div.st-key-btn_top_gateway button {
             background-color: transparent !important;
@@ -916,6 +927,7 @@ def render_landing_page():
             bottom: 12vh !important;
             left: 8% !important;
             z-index: 999999 !important;
+            pointer-events: auto !important;
         }
         div.st-key-btn_hero_cta button {
             background-color: #3B82F6 !important;
@@ -950,13 +962,17 @@ def render_landing_page():
         """
     components.html(html_landing, height=1000, scrolling=False)
 
-    # Native Streamlit Interactive Overlay Buttons (guaranteed navigation)
+    # Both landing page buttons open the Official Sign-In Gateway
     if st.button("Sign In", key="btn_top_gateway"):
         st.session_state["page"] = "auth_gateway"
+        st.session_state["authenticated"] = False
+        st.query_params.clear()
         st.rerun()
 
     if st.button("ENTER SECURE GATEWAY", key="btn_hero_cta", type="primary"):
         st.session_state["page"] = "auth_gateway"
+        st.session_state["authenticated"] = False
+        st.query_params.clear()
         st.rerun()
 
 
@@ -1158,21 +1174,33 @@ def render_auth_gateway():
             sign_in_submit = st.form_submit_button("Sign In", type="primary", use_container_width=True)
 
             if sign_in_submit:
-                profile = authenticate_user(email_input.strip(), password_input.strip())
-                if profile:
-                    st.session_state["authenticated"] = True
-                    st.session_state["user_profile"] = profile
-                    st.session_state["page"] = "dashboard"
-                    st.toast(f"Clearance Verified: {profile['officer_name']}", icon="⚓")
-                    st.rerun()
+                email_clean = email_input.strip()
+                pass_clean = password_input.strip()
+                if not email_clean or not pass_clean:
+                    st.warning("⚠️ Please enter both your official email and passkey to sign in.")
                 else:
-                    st.error("Invalid credentials. Verify your service email and passkey.")
+                    profile = authenticate_user(email_clean, pass_clean)
+                    if profile:
+                        st.session_state["authenticated"] = True
+                        st.session_state["user_profile"] = profile
+                        st.session_state["page"] = "dashboard"
+                        st.query_params.clear()
+                        st.toast(f"Clearance Verified: {profile['officer_name']}", icon="⚓")
+                        st.rerun()
+                    else:
+                        st.error("Invalid credentials. Verify your service email and passkey.")
 
         # Secondary "Request Access" Link
         req_col1, req_col2, req_col3 = st.columns([1, 2, 1])
         with req_col2:
             if st.button("Request Clearance", key="btn-request-access", use_container_width=True):
-                st.info(f"Clearance verification request generated for {email_input.strip()}. Follow the confirmation link sent to your official inbox.")
+                email_clean = email_input.strip()
+                if not email_clean:
+                    st.warning("⚠️ Please enter your official service email above before requesting clearance.")
+                elif "@" not in email_clean or "." not in email_clean:
+                    st.error("⚠️ Please enter a valid official service email address (e.g. officer@mod.gov.in).")
+                else:
+                    st.info(f"Clearance verification request generated for {email_clean}. Follow the confirmation link sent to your official inbox.")
 
         # Clean Hairline Divider with "OR"
         st.markdown(textwrap.dedent("""
@@ -1196,6 +1224,7 @@ def render_auth_gateway():
                 st.session_state["authenticated"] = True
                 st.session_state["user_profile"] = profile
                 st.session_state["page"] = "dashboard"
+                st.query_params.clear()
                 st.toast("SIH Evaluator Fast-Track Activated.", icon="⚓")
                 st.rerun()
 
@@ -1204,6 +1233,8 @@ def render_auth_gateway():
         with back_col2:
             if st.button("← Back to Landing Page", key="btn-back-overview", use_container_width=True):
                 st.session_state["page"] = "landing"
+                st.session_state["authenticated"] = False
+                st.query_params.clear()
                 st.rerun()
 
 
@@ -1259,6 +1290,8 @@ def render_command_dashboard():
         if st.button("TERMINATE SESSION / LOGOUT"):
             st.session_state["authenticated"] = False
             st.session_state["user_profile"] = None
+            st.session_state["page"] = "auth_gateway"
+            st.query_params.clear()
             st.rerun()
 
         st.markdown("---")
@@ -1856,14 +1889,32 @@ def render_command_dashboard():
 # MAIN APP ENTRY POINT
 # =============================================================================
 def main():
-    if st.session_state.get("authenticated", False):
+    if "page" in st.query_params:
+        target = st.query_params["page"]
+        st.query_params.clear()
+        if target in ["dashboard", "analysis", "command", "main"]:
+            if not st.session_state.get("authenticated", False):
+                profile = authenticate_user("jury@sih2026.in", "jury123")
+                if profile:
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_profile"] = profile
+            st.session_state["page"] = "dashboard"
+        elif target in ["auth", "auth_gateway", "login", "signin", "sign_in"]:
+            st.session_state["page"] = "auth_gateway"
+            st.session_state["authenticated"] = False
+        elif target in ["landing"]:
+            st.session_state["page"] = "landing"
+            st.session_state["authenticated"] = False
+
+    page = st.session_state.get("page", "landing")
+    if page in ["auth_gateway", "auth", "login", "signin", "sign_in"]:
+        render_auth_gateway()
+    elif page == "landing":
+        render_landing_page()
+    elif st.session_state.get("authenticated", False) and st.session_state.get("user_profile") is not None:
         render_command_dashboard()
     else:
-        page = st.session_state.get("page", "landing")
-        if page in ["auth_gateway", "auth", "login"]:
-            render_auth_gateway()
-        else:
-            render_landing_page()
+        render_landing_page()
 
 if __name__ == "__main__":
     main()

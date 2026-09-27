@@ -179,7 +179,7 @@
 <body>
   <div class="bg-hero-container">
     <div class="top-header">
-      <a href="?page=auth_gateway" target="_top" class="btn-signin" onclick="return triggerAuth(event)">Sign In</a>
+      <a href="?page=auth_gateway" target="_top" class="btn-signin">Sign In</a>
     </div>
     <div class="content-stage">
       <div class="content-column">
@@ -201,29 +201,9 @@
             <div class="feature-desc">Cryptographically sealed SHA-256 dossiers formatted for Admiralty Court Section 65B submission.</div>
           </div>
         </div>
-        <a href="?page=auth_gateway" target="_top" class="btn-cta" onclick="return triggerAuth(event)">ENTER SECURE GATEWAY</a>
+        <a href="?page=auth_gateway" target="_top" class="btn-cta">ENTER SECURE GATEWAY</a>
       </div>
     </div>
   </div>
-
-  <script>
-    function triggerAuth(e) {
-      if (e) e.preventDefault();
-      try {
-        if (window.top && window.top.location) {
-          window.top.location.search = '?page=auth_gateway';
-          return false;
-        }
-      } catch (err) {}
-      try {
-        if (window.parent && window.parent.location) {
-          window.parent.location.search = '?page=auth_gateway';
-          return false;
-        }
-      } catch (err) {}
-      window.location.search = '?page=auth_gateway';
-      return false;
-    }
-  </script>
 </body>
 </html>

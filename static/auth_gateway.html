@@ -265,6 +265,8 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      text-decoration: none;
+      box-sizing: border-box;
     }
 
     .btn-jury-bypass:hover:not(:disabled) {
@@ -416,8 +418,9 @@
       <section class="jury-bypass-container" aria-labelledby="section-jury-title">
         <h2 id="section-jury-title" class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;">SIH Evaluator Fast-Track</h2>
 
-        <button
-          type="button"
+        <a
+          href="?page=dashboard"
+          target="_top"
           id="btn-sih-jury-access"
           class="btn-jury-bypass"
         >
@@ -425,7 +428,7 @@
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
           </svg>
           <span>SIH JURY DIRECT ACCESS</span>
-        </button>
+        </a>
 
         <p class="jury-subtext">Bypasses standard Auth for live demonstration.</p>
       </section>
@@ -596,46 +599,17 @@
      * Email: jury@sih2026.in | Password: jury123
      * -------------------------------------------------------------------------
      */
-    btnSihJuryAccess.addEventListener('click', async () => {
+    btnSihJuryAccess.addEventListener('click', (e) => {
       clearStatus();
-      showStatus('Activating SIH Evaluator Fast-Track bypass token...', 'info');
-      btnSihJuryAccess.disabled = true;
-
-      const JURY_CREDENTIALS = {
-        email: 'jury@sih2026.in',
-        password: 'jury123'
-      };
-
+      showStatus('SIH Evaluator Clearance Granted. Redirecting to Tactical Command...', 'success');
       try {
-        if (!supabase || supabaseUrl === 'YOUR_SUPABASE_URL') {
-          console.log('[AUTH] Fast-Track Bypass Active: jury@sih2026.in');
-          setTimeout(() => {
-            showStatus('SIH Evaluator Bypass Verified. Transferring directly to Tactical Command...', 'success');
-            if (window.parent && window.parent.postMessage) {
-              window.parent.postMessage({ type: 'GAGANACAKSUH_AUTH_SUCCESS', role: 'JURY', email: JURY_CREDENTIALS.email }, '*');
-            }
-          }, 400);
-          return;
-        }
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: JURY_CREDENTIALS.email,
-          password: JURY_CREDENTIALS.password
-        });
-
-        if (error) {
-          // If dummy user is not yet created in Supabase dashboard, provide clear advisory
-          showStatus(`Jury Sign-In Notice: ${error.message}. Ensure user 'jury@sih2026.in' exists in your Supabase Auth dashboard.`, 'error');
+        if (window.top) {
+          window.top.location.href = '?page=dashboard';
         } else {
-          showStatus('SIH Evaluator Clearance Granted. Redirecting to Tactical Command...', 'success');
-          if (window.parent && window.parent.postMessage) {
-            window.parent.postMessage({ type: 'GAGANACAKSUH_AUTH_SUCCESS', role: 'JURY', session: data.session }, '*');
-          }
+          window.location.href = '?page=dashboard';
         }
       } catch (err) {
-        showStatus(`Bypass Execution Error: ${err.message}`, 'error');
-      } finally {
-        btnSihJuryAccess.disabled = false;
+        window.location.href = '?page=dashboard';
       }
     });
   </script>
