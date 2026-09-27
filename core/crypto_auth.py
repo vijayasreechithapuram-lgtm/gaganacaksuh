@@ -54,12 +54,26 @@ CREDENTIALS_DB = {
         "service_number": "ICG-WEST-7741",
         "base": "Mumbai Coast Guard Station (Western Command)"
     },
+    "officer.icg@mod.gov.in": {
+        "password_hash": hashlib.sha256("CoastGuard@2026".encode()).hexdigest(),
+        "role": ROLE_COMMAND_OFFICER,
+        "officer_name": "Cmdr. Rajesh Verma",
+        "service_number": "ICG-WEST-7741",
+        "base": "Mumbai Coast Guard Station (Western Command)"
+    },
     "judge.tribunal": {
         "password_hash": hashlib.sha256("Justice@Maritime2026".encode()).hexdigest(),
         "role": ROLE_TRIBUNAL_JUDGE,
         "officer_name": "Justice Ananya Sundaram",
         "service_number": "MARITIME-TRIBUNAL-DL-09",
         "base": "High Court Admiralty Division (Special Bench)"
+    },
+    "jury@sih2026.in": {
+        "password_hash": hashlib.sha256("jury123".encode()).hexdigest(),
+        "role": ROLE_COMMAND_OFFICER,
+        "officer_name": "SIH Evaluator / Jury Bench",
+        "service_number": "SIH26143-EVAL-01",
+        "base": "Ministry of Ports, Shipping and Waterways / SIH 2026"
     }
 }
 

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gaganacaksuh // Maritime Forensics Engine</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #0B1120;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #F8FAFC;
+    }
+    /* Absolute background container forced to screen edges */
+    .bg-hero-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background:
+        linear-gradient(to right, rgba(11, 17, 32, 1) 0%, rgba(11, 17, 32, 0.92) 36%, rgba(11, 17, 32, 0.68) 58%, rgba(11, 17, 32, 0.05) 100%),
+        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') center right / cover no-repeat;
+    }
+    .top-header {
+      position: absolute;
+      top: 2rem;
+      right: 2.5rem;
+      z-index: 50;
+    }
+    .btn-signin {
+      visibility: hidden;
+      opacity: 0;
+      background: transparent;
+      color: #F8FAFC;
+      border: 1px solid rgba(248, 250, 252, 0.85);
+      border-radius: 6px;
+      padding: 8px 22px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .btn-signin:hover {
+      background: rgba(248, 250, 252, 0.12);
+      border-color: #FFFFFF;
+      color: #FFFFFF;
+    }
+    .content-stage {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 8%;
+      box-sizing: border-box;
+    }
+    .content-column {
+      max-width: 650px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #3B82F6;
+      text-transform: uppercase;
+      margin-bottom: 0.875rem;
+    }
+    h1.hero-title {
+      font-size: clamp(2.75rem, 6vw, 4.25rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #F8FAFC;
+      margin: 0 0 1rem 0;
+    }
+    .subtitle {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: #CBD5E1;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+    .sub-description {
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #94A3B8;
+      line-height: 1.55;
+      margin-bottom: 2rem;
+    }
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.125rem;
+      width: 100%;
+      margin-bottom: 2.25rem;
+    }
+    .feature-item {
+      border-left: 2px solid #3B82F6;
+      padding-left: 1.125rem;
+      text-align: left;
+    }
+    .feature-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #F8FAFC;
+      margin-bottom: 3px;
+    }
+    .feature-desc {
+      font-size: 0.85rem;
+      color: #94A3B8;
+      line-height: 1.45;
+    }
+    .btn-cta {
+      visibility: hidden;
+      opacity: 0;
+      background-color: #3B82F6;
+      color: #F8FAFC;
+      border: none;
+      border-radius: 6px;
+      padding: 13px 28px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+    .btn-cta:hover {
+      background-color: #2563EB;
+      color: #FFFFFF;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.45);
+    }
+    @media (max-width: 768px) {
+      .content-stage {
+        padding: 4rem 1.5rem;
+      }
+      .bg-hero-container {
+        background:
+          linear-gradient(rgba(11, 17, 32, 0.95), rgba(11, 17, 32, 0.95)),
+          url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') center right / cover no-repeat;
+      }
+      .top-header {
+        top: 1.5rem;
+        right: 1.5rem;
+      }
+      h1.hero-title {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-hero-container">
+    <div class="top-header">
+      <a href="?page=auth_gateway" target="_top" class="btn-signin" onclick="return triggerAuth(event)">Sign In</a>
+    </div>
+    <div class="content-stage">
+      <div class="content-column">
+        <div class="eyebrow">MARITIME SURVEILLANCE &amp; ATTRIBUTION</div>
+        <h1 class="hero-title">Gaganacaksuh</h1>
+        <div class="subtitle">Autonomous Maritime Forensics Engine</div>
+        <div class="sub-description">Mathematical attribution of illegal oil spills to evasive dark ships.</div>
+        <div class="features-list">
+          <div class="feature-item">
+            <div class="feature-title">Sentinel-1 SAR</div>
+            <div class="feature-desc">All-weather C-band synthetic aperture radar with deep U-Net semantic segmentation.</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-title">Lagrangian Drift</div>
+            <div class="feature-desc">Reverse particle backcasting constrained by INCOIS ocean currents and ERA5 wind forcings.</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-title">ISO/IEC 27037</div>
+            <div class="feature-desc">Cryptographically sealed SHA-256 dossiers formatted for Admiralty Court Section 65B submission.</div>
+          </div>
+        </div>
+        <a href="?page=auth_gateway" target="_top" class="btn-cta" onclick="return triggerAuth(event)">ENTER SECURE GATEWAY</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function triggerAuth(e) {
+      if (e) e.preventDefault();
+      try {
+        if (window.top && window.top.location) {
+          window.top.location.search = '?page=auth_gateway';
+          return false;
+        }
+      } catch (err) {}
+      try {
+        if (window.parent && window.parent.location) {
+          window.parent.location.search = '?page=auth_gateway';
+          return false;
+        }
+      } catch (err) {}
+      window.location.search = '?page=auth_gateway';
+      return false;
+    }
+  </script>
+</body>
+</html>

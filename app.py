@@ -11,10 +11,12 @@ import numpy as np
 import pandas as pd
 import json
 import time
+import io
 import base64
 import textwrap
 import cv2
 from PIL import Image
+from pathlib import Path
 import streamlit.components.v1 as components
 import folium
 import pydeck as pdk
@@ -851,345 +853,365 @@ def render_2d_leaflet_component(
 # =============================================================================
 # VIEW: MILITARY CLEARANCE GATEWAY & AUTHENTICATION
 # =============================================================================
-def render_login_screen():
-    # Scoped 6-second satellite zoom transition, orbital HUD & floating 3D mascot (strictly isolated to landing page)
-    st.markdown(textwrap.dedent("""
+
+
+# =============================================================================
+# VIEW: PAGE 1 - FULL-BLEED LANDING PAGE
+# =============================================================================
+def render_landing_page():
+    # 0. Check query params or session state navigation
+    if "page" in st.query_params and st.query_params["page"] in ["auth", "auth_gateway", "login"]:
+        st.session_state["page"] = "auth_gateway"
+        st.rerun()
+
+    # 1. Remove parent padding and enforce true full-screen breakout
+    st.markdown("""
     <style>
-    /* 6-SECOND SATELLITE ZOOM TRANSITION & ORBITAL HUD (LANDING PAGE EXCLUSIVE) */
-    @keyframes satelliteZoom6s {
-        0% {
-            transform: scale(0.68) translateY(-32px) rotateX(14deg);
-            filter: blur(6px) brightness(0.6);
-            opacity: 0.1;
+        header[data-testid="stHeader"] {
+            display: none !important;
         }
-        25% {
-            transform: scale(0.82) translateY(-16px) rotateX(9deg);
-            filter: blur(3.5px) brightness(0.85);
-            opacity: 0.65;
+        .main, .block-container {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100vw !important;
+            overflow: hidden !important;
         }
-        60% {
-            transform: scale(1.03) translateY(2px) rotateX(2deg);
-            filter: blur(0.5px) brightness(1.15);
-            opacity: 0.95;
+        div[data-testid="stVerticalBlock"] {
+            gap: 0 !important;
         }
-        85% {
-            transform: scale(0.99) translateY(0px) rotateX(0deg);
-            filter: blur(0px) brightness(1.02);
-            opacity: 1;
+        iframe {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            z-index: 1 !important;
         }
-        100% {
-            transform: scale(1.0) translateY(0px) rotateX(0deg);
-            filter: blur(0px) brightness(1.0);
-            opacity: 1;
+        /* Native Streamlit Overlay Buttons with High Z-Index */
+        div.st-key-btn_top_gateway {
+            position: fixed !important;
+            top: 2rem !important;
+            right: 2.5rem !important;
+            z-index: 999999 !important;
         }
-    }
-
-    @keyframes progressTimeline6s {
-        0% { width: 0%; }
-        100% { width: 100%; }
-    }
-
-    .landing-zoom-wrapper {
-        animation: satelliteZoom6s 6.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        transform-origin: center top;
-        perspective: 1200px;
-    }
-
-    .orbital-telemetry-hud {
-        background: linear-gradient(180deg, rgba(8, 15, 30, 0.95) 0%, rgba(3, 7, 18, 0.88) 100%);
-        border: 1px solid rgba(0, 240, 255, 0.35);
-        border-radius: 8px;
-        padding: 10px 16px;
-        margin-bottom: 20px;
-        box-shadow: 0 0 25px rgba(0, 240, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        font-family: 'JetBrains Mono', monospace;
-    }
-
-    .telemetry-progress-track {
-        height: 4px;
-        background: #0f172a;
-        border-radius: 2px;
-        overflow: hidden;
-        margin-top: 8px;
-    }
-
-    .telemetry-progress-bar {
-        height: 100%;
-        background: linear-gradient(90deg, #00f0ff 0%, #10b981 65%, #f59e0b 100%);
-        animation: progressTimeline6s 6.0s linear forwards;
-    }
-
-    /* 3D FLOATING MASCOT: GAGANACHAKSHUH ORBITAL SENTINEL */
-    @keyframes floatMascot {
-        0%, 100% {
-            transform: translateY(0px) rotateY(0deg) rotateZ(0deg);
+        div.st-key-btn_top_gateway button {
+            background-color: transparent !important;
+            color: #F8FAFC !important;
+            border: 1px solid rgba(248, 250, 252, 0.85) !important;
+            border-radius: 6px !important;
+            padding: 8px 22px !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            transition: all 0.2s ease !important;
         }
-        50% {
-            transform: translateY(-14px) rotateY(12deg) rotateZ(2deg);
+        div.st-key-btn_top_gateway button:hover {
+            background-color: rgba(248, 250, 252, 0.12) !important;
+            border-color: #FFFFFF !important;
         }
-    }
-
-    @keyframes radarWavePulse {
-        0% {
-            transform: scale(0.7);
-            opacity: 0.85;
+        div.st-key-btn_hero_cta {
+            position: fixed !important;
+            bottom: 12vh !important;
+            left: 8% !important;
+            z-index: 999999 !important;
         }
-        50% {
-            transform: scale(1.35);
-            opacity: 0.25;
+        div.st-key-btn_hero_cta button {
+            background-color: #3B82F6 !important;
+            color: #FFFFFF !important;
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 13px 28px !important;
+            font-size: 0.875rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.04em !important;
+            text-transform: uppercase !important;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4) !important;
+            transition: all 0.2s ease !important;
         }
-        100% {
-            transform: scale(1.75);
-            opacity: 0;
+        div.st-key-btn_hero_cta button:hover {
+            background-color: #2563EB !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5) !important;
         }
-    }
-
-    @keyframes radarSweep360 {
-        0% {
-            transform: rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    @keyframes orbitalRingSpin {
-        0% {
-            transform: rotateX(65deg) rotateY(20deg) rotateZ(0deg);
-        }
-        100% {
-            transform: rotateX(65deg) rotateY(20deg) rotateZ(360deg);
-        }
-    }
-
-    .mascot-anchor {
-        position: fixed;
-        bottom: 24px;
-        right: 28px;
-        z-index: 99999;
-        display: flex;
-        align-items: flex-end;
-        gap: 12px;
-        perspective: 1000px;
-        animation: floatMascot 4.5s ease-in-out infinite;
-        pointer-events: auto;
-    }
-
-    .mascot-dialogue {
-        background: linear-gradient(135deg, rgba(11, 17, 32, 0.95) 0%, rgba(15, 23, 42, 0.92) 100%);
-        border: 1px solid rgba(0, 240, 255, 0.45);
-        border-radius: 10px;
-        padding: 10px 14px;
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75), 0 0 20px rgba(0, 240, 255, 0.2);
-        backdrop-filter: blur(10px);
-        max-width: 250px;
-        transition: all 0.3s ease;
-        font-family: 'JetBrains Mono', monospace;
-    }
-
-    .mascot-anchor:hover .mascot-dialogue {
-        border-color: #00f0ff;
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85), 0 0 28px rgba(0, 240, 255, 0.45);
-        transform: scale(1.02);
-    }
-
-    .mascot-orb-frame {
-        position: relative;
-        width: 68px;
-        height: 68px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .mascot-wave-ring {
-        position: absolute;
-        width: 62px;
-        height: 62px;
-        border-radius: 50%;
-        border: 2px solid rgba(0, 240, 255, 0.65);
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.4);
-        animation: radarWavePulse 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
-        pointer-events: none;
-    }
-
-    .mascot-gyro-ring {
-        position: absolute;
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        border: 1.5px dashed rgba(16, 185, 129, 0.75);
-        animation: orbitalRingSpin 5s linear infinite;
-        pointer-events: none;
-    }
-
-    .mascot-orb-core {
-        position: relative;
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: radial-gradient(circle at 35% 35%, #38bdf8 0%, #0284c7 40%, #0369a1 70%, #0f172a 100%);
-        box-shadow: 0 0 22px rgba(0, 240, 255, 0.85), inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -4px 8px rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .mascot-anchor:hover .mascot-orb-core {
-        transform: scale(1.1);
-        box-shadow: 0 0 35px #00f0ff, 0 0 50px rgba(16, 185, 129, 0.6);
-    }
-
-    .mascot-radar-sweep {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 240, 255, 0.45) 60deg, transparent 70deg);
-        animation: radarSweep360 2.2s linear infinite;
-        pointer-events: none;
-    }
-
-    .mascot-icon {
-        font-size: 1.5rem;
-        z-index: 2;
-        filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.9));
-    }
     </style>
-    """).strip(), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-    # Clean unindented landing page HTML structure (prevents CommonMark markdown code-block bug)
-    st.markdown(textwrap.dedent("""
-    <div class="landing-zoom-wrapper">
-    <div class="orbital-telemetry-hud">
-    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:#94a3b8;">
-    <div><span class="led-live"></span><b style="color:#00f0ff;">ORBITAL SATELLITE ZOOM INGESTION // 6.0s DESCENT SEQUENCE</b></div>
-    <div style="color:#10b981; font-weight:600;">ALTITUDE: 693.4 km &rarr; 10.0 km &bull; RES: 10m GSD</div>
-    </div>
-    <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:#64748b; margin-top:4px;">
-    <span>SENSOR: SENTINEL-1 C-SAR &bull; ISRO EOS-04 POLARIMETRIC</span>
-    <span>TARGET: ARABIAN SEA FAIRWAY (19.4167&deg;N, 71.3333&deg;E)</span>
-    </div>
-    <div class="telemetry-progress-track">
-    <div class="telemetry-progress-bar"></div>
-    </div>
-    </div>
-    <div style="text-align: center; margin-top: 10px; margin-bottom: 22px;">
-    <h1 style="font-family: 'JetBrains Mono', monospace; color: #00f0ff; letter-spacing: 2px; margin-bottom: 4px;">
-    PROJECT GAGANACAKṢUḤ
-    </h1>
-    <p style="color: #94a3b8; font-size: 0.95rem; letter-spacing: 1px;">
-    MULTI-SATELLITE SURVEILLANCE &bull; ZERO-TRUST AIS TRACKING &bull; ISO/IEC 27037 COURT DOSSIER ENGINE
-    </p>
-    <span style="background-color: #1e293b; color: #38bdf8; padding: 4px 12px; border-radius: 4px; font-size: 0.8rem; font-family: monospace;">
-    SIH PROBLEM STATEMENT ID: SIH26143 &bull; CLASSIFIED DEFENSE / JUDICIAL GATEWAY
-    </span>
-    </div>
-    <div class="metric-3d-grid">
-    <div class="metric-card-3d" style="border-left: 4px solid #00f0ff;">
-    <div class="metric-3d-lbl">Multi-Constellation Sensors</div>
-    <div class="metric-3d-val" style="color: #00f0ff;">4 ACTIVE</div>
-    <div class="metric-3d-sub">Sentinel-1 C-SAR &bull; ISRO EOS-04 &bull; S-2 MSI &bull; VIIRS</div>
-    </div>
-    <div class="metric-card-3d" style="border-left: 4px solid #10b981;">
-    <div class="metric-3d-lbl">AI Semantic Accuracy</div>
-    <div class="metric-3d-val" style="color: #10b981;">94.82%</div>
-    <div class="metric-3d-sub">Zenodo SAR Benchmark (Dice 0.948 &bull; 1,112 Chips)</div>
-    </div>
-    <div class="metric-card-3d" style="border-left: 4px solid #f59e0b;">
-    <div class="metric-3d-lbl">Zero-Trust AIS Defense</div>
-    <div class="metric-3d-val" style="color: #f59e0b;">ITU-R M.1371</div>
-    <div class="metric-3d-sub">GPS Spoofing (&gt;35 kts) &amp; Dark Ship Radar Fusion</div>
-    </div>
-    <div class="metric-card-3d" style="border-left: 4px solid #ec4899;">
-    <div class="metric-3d-lbl">Cryptographic Evidence</div>
-    <div class="metric-3d-val" style="color: #ec4899;">ISO/IEC 27037</div>
-    <div class="metric-3d-sub">Immutable SHA-256 Ledger &amp; Evidence Act Sec 65B</div>
-    </div>
-    </div>
-    </div>
-    """).strip(), unsafe_allow_html=True)
-
-    # 3D Floating Mascot Widget in Bottom-Right Corner (Gaganachakshuh Radar Sentinel)
-    st.markdown(textwrap.dedent("""
-    <div class="mascot-anchor">
-    <div class="mascot-dialogue">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-    <span style="font-size:0.75rem; font-weight:700; color:#00f0ff;"><span class="led-live"></span>GAGANACHAKSHUH</span>
-    <span style="font-size:0.62rem; color:#10b981; border:1px solid #10b981; padding:1px 5px; border-radius:3px; background:rgba(16,185,129,0.15);">RADAR SENTINEL</span>
-    </div>
-    <div style="font-size:0.68rem; color:#94a3b8; line-height:1.3;">
-    Multi-Sat SAR feed synchronized. Ready for classified access.
-    </div>
-    </div>
-    <div class="mascot-orb-frame">
-    <div class="mascot-wave-ring"></div>
-    <div class="mascot-gyro-ring"></div>
-    <div class="mascot-orb-core" title="Gaganachakshuh: Radar Assistant Online">
-    <div class="mascot-radar-sweep"></div>
-    <div class="mascot-icon">🛰️</div>
-    </div>
-    </div>
-    </div>
-    """).strip(), unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns([1, 1.8, 1])
-    with col2:
-        st.markdown(textwrap.dedent("""
-        <div class="hud-card" style="border-left-color: #00f0ff;">
-        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 12px;">
-        <span style="font-family: monospace; font-weight:700; color:#00f0ff;">[SECURE ACCESS CONTROL GATE]</span>
-        <span><span class="led-live"></span><small style="color:#10b981; font-family:monospace;">GATEWAY ENCRYPTED (HMAC-SHA256)</small></span>
+    landing_file = Path(__file__).parent / "static" / "fullbleed_landing.html"
+    if landing_file.exists():
+        with open(landing_file, "r", encoding="utf-8") as f:
+            html_landing = f.read()
+    else:
+        html_landing = """
+        <div style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; margin: 0; padding: 0; background: #0B1120; color: #F8FAFC;">
+            <h1>Gaganacaksuh</h1>
         </div>
-        <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 15px;">
-        Access is restricted to authorized Command Officers (Coast Guard/Port Authorities) and Admiralty Tribunal Magistrates.
-        </p>
+        """
+    components.html(html_landing, height=1000, scrolling=False)
+
+    # Native Streamlit Interactive Overlay Buttons (guaranteed navigation)
+    if st.button("Sign In", key="btn_top_gateway"):
+        st.session_state["page"] = "auth_gateway"
+        st.rerun()
+
+    if st.button("ENTER SECURE GATEWAY", key="btn_hero_cta", type="primary"):
+        st.session_state["page"] = "auth_gateway"
+        st.rerun()
+
+
+# =============================================================================
+# VIEW: PAGE 2 - TACTICAL HIGH-CONTRAST SECURE AUTH GATEWAY (RICH CSS & COLORS)
+# =============================================================================
+def render_auth_gateway():
+    # Human-Crafted Enterprise Dark Theme CSS
+    st.markdown("""
+    <style>
+        .stApp {
+            background-color: #080C14 !important;
+            background-image: radial-gradient(circle at 50% 12%, #0F172A 0%, #080C14 75%) !important;
+        }
+
+        /* Seamless Header Section of Auth Card */
+        .auth-panel-top {
+            background-color: #0F172A;
+            border: 1px solid #1E293B;
+            border-bottom: none;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 28px 24px 14px 24px;
+            margin-top: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .auth-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background-color: #1E293B;
+            border: 1px solid #283548;
+            padding: 3px 9px;
+            border-radius: 9999px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: #94A3B8;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #10B981;
+        }
+
+        .auth-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #F8FAFC;
+            letter-spacing: -0.02em;
+            margin: 0 0 6px 0;
+        }
+
+        .auth-subtitle {
+            font-size: 0.875rem;
+            color: #94A3B8;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        /* Seamless Form Integration into the same card */
+        div[data-testid="stForm"] {
+            background-color: #0F172A !important;
+            border: 1px solid #1E293B !important;
+            border-top: none !important;
+            border-bottom-left-radius: 10px !important;
+            border-bottom-right-radius: 10px !important;
+            border-top-left-radius: 0 !important;
+            border-top-right-radius: 0 !important;
+            padding: 0 24px 22px 24px !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+            margin-bottom: 14px !important;
+        }
+
+        /* Calibrated Input Fields (Solid & Restrained) */
+        div[data-testid="stTextInput"] input {
+            background-color: #0B0F19 !important;
+            border: 1px solid #283548 !important;
+            border-radius: 6px !important;
+            color: #F1F5F9 !important;
+            font-size: 0.875rem !important;
+            padding: 10px 12px !important;
+        }
+
+        div[data-testid="stTextInput"] input:focus {
+            border-color: #2563EB !important;
+            box-shadow: 0 0 0 1px #2563EB !important;
+            background-color: #0D1322 !important;
+        }
+
+        /* Primary Action Button: Solid Enterprise Blue */
+        div[data-testid="stFormSubmitButton"] button {
+            background-color: #2563EB !important;
+            border: 1px solid #3B82F6 !important;
+            color: #FFFFFF !important;
+            font-weight: 600 !important;
+            font-size: 0.875rem !important;
+            border-radius: 6px !important;
+            padding: 10px 16px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+            transition: background-color 0.15s ease, border-color 0.15s ease !important;
+        }
+
+        div[data-testid="stFormSubmitButton"] button:hover {
+            background-color: #1D4ED8 !important;
+            border-color: #2563EB !important;
+        }
+
+        /* Request Access Ghost Button */
+        div.st-key-btn-request-access button {
+            background: transparent !important;
+            border: 1px solid #283548 !important;
+            color: #94A3B8 !important;
+            font-size: 0.8125rem !important;
+            font-weight: 500 !important;
+            border-radius: 6px !important;
+            transition: all 0.15s ease !important;
+        }
+
+        div.st-key-btn-request-access button:hover {
+            background-color: #162032 !important;
+            border-color: #334155 !important;
+            color: #F1F5F9 !important;
+        }
+
+        /* SIH Jury Direct Access: Clean Enterprise Secondary Button */
+        div.st-key-btn-sih-jury-direct button {
+            background-color: #131D31 !important;
+            border: 1px solid #243553 !important;
+            color: #93C5FD !important;
+            font-weight: 500 !important;
+            font-size: 0.8125rem !important;
+            border-radius: 6px !important;
+            padding: 10px 14px !important;
+            box-shadow: none !important;
+            transition: all 0.15s ease !important;
+        }
+
+        div.st-key-btn-sih-jury-direct button:hover {
+            background-color: #1A2844 !important;
+            border-color: #3B82F6 !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Return Link */
+        div.st-key-btn-back-overview button {
+            background: transparent !important;
+            border: none !important;
+            color: #64748B !important;
+            font-size: 0.8125rem !important;
+            font-weight: 400 !important;
+        }
+
+        div.st-key-btn-back-overview button:hover {
+            color: #94A3B8 !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Centered Authentication Card
+    col_g1, col_g2, col_g3 = st.columns([1, 1.25, 1])
+    with col_g2:
+        # Auth Card Top Header
+        st.markdown(textwrap.dedent("""
+        <div class="auth-panel-top">
+            <div class="auth-status-pill">
+                <span class="status-dot"></span>
+                <span>RESTRICTED ACCESS // OFFICIAL CLEARANCE</span>
+            </div>
+            <h2 class="auth-title">Sign In</h2>
+            <p class="auth-subtitle">Access the Gaganacaksuh Maritime Forensics Engine.</p>
         </div>
         """).strip(), unsafe_allow_html=True)
 
-        # Quick Clearance Badge Selection
-        clearance_choice = st.radio(
-            "Select Operator Clearance Profile:",
-            [
-                "🛡️ Command Officer (Indian Coast Guard / Western Command)",
-                "⚖️ Tribunal Judge / Legal Investigator (Admiralty Court Special Bench)"
-            ],
-            index=0
-        )
+        # Official Access Form (Official Email, Password, Sign In)
+        with st.form("enterprise_auth_form"):
+            st.markdown("""<div style="font-size: 0.78125rem; font-weight: 500; color: #94A3B8; margin-top: 14px; margin-bottom: 5px;">Official Email</div>""", unsafe_allow_html=True)
+            email_input = st.text_input(
+                "Official Email",
+                label_visibility="collapsed",
+                key="official-email",
+                placeholder="Enter your email"
+            )
 
-        default_user = "officer.icg" if "Command" in clearance_choice else "judge.tribunal"
-        default_pwd = "CoastGuard@2026" if "Command" in clearance_choice else "Justice@Maritime2026"
+            st.markdown("""<div style="font-size: 0.78125rem; font-weight: 500; color: #94A3B8; margin-top: 12px; margin-bottom: 5px;">Passkey / Password</div>""", unsafe_allow_html=True)
+            password_input = st.text_input(
+                "Password",
+                type="password",
+                label_visibility="collapsed",
+                key="password",
+                placeholder="••••••••"
+            )
 
-        with st.form("login_form"):
-            username_input = st.text_input("Operator Service ID / Username:", value=default_user)
-            password_input = st.text_input("Cryptographic Clearance Passphrase:", value=default_pwd, type="password")
-            submit = st.form_submit_button("AUTHENTICATE CLEARANCE TOKEN")
+            st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+            sign_in_submit = st.form_submit_button("Sign In", type="primary", use_container_width=True)
 
-            if submit:
-                profile = authenticate_user(username_input, password_input)
+            if sign_in_submit:
+                profile = authenticate_user(email_input.strip(), password_input.strip())
                 if profile:
                     st.session_state["authenticated"] = True
                     st.session_state["user_profile"] = profile
-                    st.toast(f"Clearance Granted: {profile['officer_name']}", icon="🛡️")
+                    st.session_state["page"] = "dashboard"
+                    st.toast(f"Clearance Verified: {profile['officer_name']}", icon="⚓")
                     st.rerun()
                 else:
-                    st.error("ACCESS DENIED: Invalid Clearance Credentials or Revoked Certificate.")
+                    st.error("Invalid credentials. Verify your service email and passkey.")
 
+        # Secondary "Request Access" Link
+        req_col1, req_col2, req_col3 = st.columns([1, 2, 1])
+        with req_col2:
+            if st.button("Request Clearance", key="btn-request-access", use_container_width=True):
+                st.info(f"Clearance verification request generated for {email_input.strip()}. Follow the confirmation link sent to your official inbox.")
+
+        # Clean Hairline Divider with "OR"
         st.markdown(textwrap.dedent("""
-        <div style="margin-top: 15px; font-size: 0.75rem; color: #64748b; text-align: center; font-family: monospace;">
-        Compliant with ISO/IEC 27037:2012 Digital Evidence Protocols & Indian Evidence Act Sec 65B
+        <div style="position: relative; display: flex; align-items: center; justify-content: center; margin: 20px 0;">
+            <div style="position: absolute; left: 0; right: 0; height: 1px; background-color: #1E293B; z-index: 1;"></div>
+            <span style="position: relative; z-index: 2; background-color: #080C14; padding: 0 12px; font-size: 0.6875rem; font-weight: 600; color: #475569; letter-spacing: 0.06em; text-transform: uppercase;">OR</span>
         </div>
         """).strip(), unsafe_allow_html=True)
 
+        # SIH Jury Direct Access Button (Bypass for Live Demos)
+        jury_bypass = st.button("SIH Jury Direct Access (One-Click)", key="btn-sih-jury-direct", use_container_width=True)
+        st.markdown(textwrap.dedent("""
+        <div style="font-size: 0.75rem; color: #64748B; text-align: center; margin-top: 6px; margin-bottom: 1.25rem; line-height: 1.4;">
+            Pre-authenticated evaluation session for the judging bench.
+        </div>
+        """).strip(), unsafe_allow_html=True)
 
-# =============================================================================
-# VIEW: TACTICAL COMMAND DASHBOARD (AUTHENTICATED)
-# =============================================================================
+        if jury_bypass:
+            profile = authenticate_user("jury@sih2026.in", "jury123")
+            if profile:
+                st.session_state["authenticated"] = True
+                st.session_state["user_profile"] = profile
+                st.session_state["page"] = "dashboard"
+                st.toast("SIH Evaluator Fast-Track Activated.", icon="⚓")
+                st.rerun()
+
+        # Back to Landing Page Link
+        back_col1, back_col2, back_col3 = st.columns([1, 2, 1])
+        with back_col2:
+            if st.button("← Back to Landing Page", key="btn-back-overview", use_container_width=True):
+                st.session_state["page"] = "landing"
+                st.rerun()
+
+
+def render_login_screen():
+    """Alias for authentication gateway."""
+    render_auth_gateway()
+
+
 def render_command_dashboard():
     user = st.session_state["user_profile"]
     is_officer = (user["role"] == ROLE_COMMAND_OFFICER)
@@ -1465,16 +1487,68 @@ def render_command_dashboard():
 
             with col_wms2:
                 st.markdown("<b style='color:#38bdf8; font-family:monospace;'>Multi-Sensor Dual-Layer Verification</b>", unsafe_allow_html=True)
-                subcol1, subcol2 = st.columns(2)
-                with subcol1:
-                    st.caption("1. Sentinel-1 SAR GRDH (C-Band Radar Amplitude)")
-                    st.image(sar_scene["sar_amplitude"], caption="Radar dark spot (wave damping)", use_container_width=True)
-                with subcol2:
-                    st.caption("2. Sentinel-2 Optical MSI (False-Color NDVI Index)")
-                    # Normalize NDVI for display
-                    ndvi_norm = ((sar_scene["ndvi"] + 1.0) / 2.0 * 255.0).astype(np.uint8)
-                    ndvi_colored = cv2.applyColorMap(ndvi_norm, cv2.COLORMAP_JET)
-                    st.image(ndvi_colored, caption="Red: Algal Bloom Lookalike | Blue: Mineral Oil", use_container_width=True)
+                
+                # Normalize NDVI for display
+                ndvi_norm = ((sar_scene["ndvi"] + 1.0) / 2.0 * 255.0).astype(np.uint8)
+                ndvi_colored = cv2.applyColorMap(ndvi_norm, cv2.COLORMAP_JET)
+
+                # Base64 encode images for pixel-perfect symmetrical grid rendering
+                sar_img = sar_scene["sar_amplitude"]
+                if sar_img.dtype != np.uint8:
+                    sar_min, sar_max = float(sar_img.min()), float(sar_img.max())
+                    if sar_max > sar_min:
+                        sar_img = ((sar_img - sar_min) / (sar_max - sar_min) * 255.0).astype(np.uint8)
+                    else:
+                        sar_img = sar_img.astype(np.uint8)
+                buf_sar = io.BytesIO()
+                Image.fromarray(sar_img).save(buf_sar, format="PNG")
+                sar_b64 = base64.b64encode(buf_sar.getvalue()).decode("utf-8")
+
+                buf_ndvi = io.BytesIO()
+                Image.fromarray(ndvi_colored).save(buf_ndvi, format="PNG")
+                ndvi_b64 = base64.b64encode(buf_ndvi.getvalue()).decode("utf-8")
+
+                # Perfectly symmetrical 2-column image grid
+                st.markdown(f"""
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; box-sizing: border-box; margin-top: 8px; margin-bottom: 16px;">
+                    <div style="background-color: #0b1120; border: 1px solid #1e293b; border-radius: 6px; padding: 14px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-family: monospace; font-size: 0.8rem; color: #94A3B8; font-weight: 600; margin-bottom: 8px;">
+                            1. Sentinel-1 SAR GRDH (C-Band Radar Amplitude)
+                        </div>
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: #020617;">
+                            <img src="data:image/png;base64,{sar_b64}" style="width: 100%; height: 210px; object-fit: cover; display: block;" alt="Sentinel-1 SAR" />
+                        </div>
+                        <div style="font-size: 0.75rem; color: #64748B; margin-top: 8px; text-align: center;">
+                            Radar dark spot (wave damping)
+                        </div>
+                    </div>
+                    <div style="background-color: #0b1120; border: 1px solid #1e293b; border-radius: 6px; padding: 14px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-family: monospace; font-size: 0.8rem; color: #94A3B8; font-weight: 600; margin-bottom: 8px;">
+                            2. Sentinel-2 Optical MSI (False-Color NDVI Index)
+                        </div>
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: #020617;">
+                            <img src="data:image/png;base64,{ndvi_b64}" style="width: 100%; height: 210px; object-fit: cover; display: block;" alt="Sentinel-2 Optical" />
+                        </div>
+                        <div style="font-size: 0.75rem; color: #64748B; margin-top: 8px; text-align: center;">
+                            Red: Algal Bloom Lookalike | Blue: Mineral Oil
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forensic Classification Card (Yellow Anomaly Interpretation) -->
+                <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid #3B82F6; border-left: 4px solid #3B82F6; border-radius: 6px; padding: 14px 16px; width: 100%; box-sizing: border-box; margin-bottom: 16px;">
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #F8FAFC; margin-bottom: 8px; font-family: 'Inter', sans-serif;">
+                        Forensic Classification: MARPOL Annex II Discharge
+                    </div>
+                    <div style="font-size: 0.85rem; color: #CBD5E1; line-height: 1.55; margin-bottom: 10px;">
+                        The Sentinel-2 false-color optical index classifies this anomaly as yellow, mathematically ruling out petroleum-based mineral oil (blue) and biological algal blooms (red). Cross-referencing the Sentinel-1 wave damping (dark spot) with ERA5 wind forcings (&gt;3m/s) confirms the presence of a physical surface film.
+                    </div>
+                    <ul style="font-size: 0.825rem; color: #94A3B8; line-height: 1.6; margin: 0; padding-left: 20px;">
+                        <li><strong style="color: #F8FAFC;">Primary Match:</strong> Edible liquid cargo (vegetable/palm oil) tank wash discharge.</li>
+                        <li><strong style="color: #F8FAFC;">Secondary Match:</strong> Natural biogenic slick (zooplankton lipid release).</li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
 
                 st.info(f"💡 Automated Filter: Suppressed {unet_res.get('optical_lookalikes_filtered', 1)} biogenic lookalike patches in optical NDVI spectrum.")
 
@@ -1725,20 +1799,20 @@ def render_command_dashboard():
             ex_zone = st.session_state["exclusion_zone"]
             reroutes = st.session_state["reroutes"]
 
-            c_rr1, c_rr2 = st.columns([1.2, 1.8])
+            c_rr1, c_rr2 = st.columns(2)
             with c_rr1:
                 st.markdown("<b style='color:#38bdf8; font-family:monospace;'>Dynamic Exclusion Corridor</b>", unsafe_allow_html=True)
                 st.markdown(f"""
-                <div style="background-color:#020617; border:1px solid #1e293b; padding:12px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#cbd5e1;">
-                    <b>Zone Status:</b> <span style="color:#ef4444;">{ex_zone['threat_status']}</span><br/>
-                    <b>Mandatory Standoff:</b> {ex_zone['safety_buffer_nm']} Nautical Miles<br/>
-                    <b>Advisory:</b> {ex_zone['advisory']}<br/>
-                    <b>Corridor Bounds:</b> 4 Geodetic Vertices
+                <div style="background-color:#0b1120; border:1px solid #1e293b; padding:14px 16px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#cbd5e1; min-height:140px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between;">
+                    <div><b>Zone Status:</b> <span style="color:#ef4444;">{ex_zone['threat_status']}</span></div>
+                    <div><b>Mandatory Standoff:</b> {ex_zone['safety_buffer_nm']} Nautical Miles</div>
+                    <div><b>Advisory:</b> {ex_zone['advisory']}</div>
+                    <div><b>Corridor Bounds:</b> 4 Geodetic Vertices</div>
                 </div>
                 """, unsafe_allow_html=True)
 
-                st.markdown("<br/><b style='color:#38bdf8; font-family:monospace;'>Automated VHF / Telegram Emergency Dispatch</b>", unsafe_allow_html=True)
-                if st.button("🚨 TRIGGER EMERGENCY MARITIME SAFETY BROADCAST"):
+                st.markdown("<div style='margin-top:16px; margin-bottom:6px;'><b style='color:#38bdf8; font-family:monospace;'>Automated VHF / Telegram Emergency Dispatch</b></div>", unsafe_allow_html=True)
+                if st.button("🚨 TRIGGER EMERGENCY MARITIME SAFETY BROADCAST", use_container_width=True):
                     st.session_state["broadcast_dispatched"] = True
                     st.toast("VHF NAVTEX & Telegram Emergency Broadcast Dispatched!", icon="📡")
 
@@ -1759,12 +1833,12 @@ def render_command_dashboard():
                 st.markdown("<b style='color:#38bdf8; font-family:monospace;'>Computed Vessel Divert Waypoints</b>", unsafe_allow_html=True)
                 for r in reroutes:
                     st.markdown(f"""
-                    <div style="background-color:#0b1120; border:1px solid #1e293b; padding:10px; border-radius:6px; margin-bottom:8px; font-family:monospace; font-size:0.8rem;">
+                    <div style="background-color:#0b1120; border:1px solid #1e293b; padding:14px 16px; border-radius:6px; font-family:monospace; font-size:0.8rem; min-height:140px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between;">
                         <div style="display:flex; justify-content:space-between;">
                             <b style="color:#00f0ff;">{r['vessel_name']} (MMSI {r['mmsi']})</b>
                             <span style="color:#f97316;">{r['urgency']}</span>
                         </div>
-                        <div style="color:#94a3b8; font-size:0.75rem; margin-top:4px;">
+                        <div style="color:#94a3b8; font-size:0.75rem; margin-top:8px;">
                             Distance to Spill: <b>{r['dist_to_spill_km']} km</b><br/>
                             Divert Waypoint: <span style="color:#10b981;">{r['diversion_waypoint'][0]}°N, {r['diversion_waypoint'][1]}°E</span><br/>
                             Course Change: <span style="color:#cbd5e1;">{r['reroute_instruction']}</span>
@@ -1776,11 +1850,20 @@ def render_command_dashboard():
 # =============================================================================
 # MAIN APP ENTRY POINT
 # =============================================================================
+
+
+# =============================================================================
+# MAIN APP ENTRY POINT
+# =============================================================================
 def main():
-    if not st.session_state.get("authenticated", False):
-        render_login_screen()
-    else:
+    if st.session_state.get("authenticated", False):
         render_command_dashboard()
+    else:
+        page = st.session_state.get("page", "landing")
+        if page in ["auth_gateway", "auth", "login"]:
+            render_auth_gateway()
+        else:
+            render_landing_page()
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gaganacakṣuḥ // Autonomous Maritime Forensics Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================================================================
+       ENTERPRISE DESIGN SYSTEM (PALANTIR / VERCEL STYLE)
+       ========================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-page: #0F172A;
+      --bg-card: #1E293B;
+      --bg-input: #0F172A;
+      --border-color: #334155;
+      --border-focus: #475569;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --brand-blue: #3B82F6;
+      --brand-blue-hover: #2563EB;
+      --brand-blue-active: #1D4ED8;
+      --brand-blue-light: rgba(59, 130, 246, 0.1);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input {
+      font-family: inherit;
+    }
+
+    /* =========================================================================
+       TOP NAVBAR
+       ========================================================================= */
+    .navbar {
+      width: 100%;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      background-color: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .nav-brand-badge {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--brand-blue);
+      background-color: var(--brand-blue-light);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-nav-signin {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.5rem 1.125rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-nav-signin:hover {
+      background-color: var(--bg-card);
+      border-color: var(--brand-blue);
+    }
+
+    /* =========================================================================
+       PAGE 1: HERO VIEW (SATELLITE BACKGROUND & TRACKED VESSEL BLIP)
+       ========================================================================= */
+    .view-landing {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 6rem 1.5rem 3rem;
+      /* High-resolution dark satellite image of Earth's ocean with heavy dark overlay */
+      background:
+        linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)),
+        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') center center / cover no-repeat;
+      overflow: hidden;
+    }
+
+    /* Tracked Ship CSS Radar Blip */
+    .tracked-ship-blip {
+      position: absolute;
+      top: 36%;
+      left: 68%;
+      width: 8px;
+      height: 8px;
+      background-color: var(--brand-blue);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .tracked-ship-blip::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1.5px solid var(--brand-blue);
+      transform: translate(-50%, -50%);
+      animation: radarPing 2.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+    .tracked-ship-blip::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid var(--brand-blue);
+      transform: translate(-50%, -50%);
+      animation: radarPing 2.8s cubic-bezier(0, 0.2, 0.8, 1) infinite 1.4s;
+    }
+
+    .blip-telemetry-tag {
+      position: absolute;
+      top: -24px;
+      left: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-color);
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    .blip-telemetry-tag span {
+      color: var(--brand-blue);
+      font-weight: 600;
+    }
+
+    @keyframes radarPing {
+      0% {
+        width: 8px;
+        height: 8px;
+        opacity: 0.9;
+      }
+      75% {
+        width: 64px;
+        height: 64px;
+        opacity: 0;
+      }
+      100% {
+        width: 64px;
+        height: 64px;
+        opacity: 0;
+      }
+    }
+
+    /* Hero Content Center Stack */
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 840px;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--brand-blue);
+      background-color: var(--brand-blue-light);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.25rem, 5.5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      color: var(--text-primary);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 620px;
+      margin-bottom: 2.25rem;
+    }
+
+    .btn-cta-primary {
+      background-color: var(--brand-blue);
+      color: #FFFFFF;
+      border: none;
+      padding: 0.875rem 2.25rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .btn-cta-primary:hover {
+      background-color: var(--brand-blue-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-cta-primary:active {
+      background-color: var(--brand-blue-active);
+      transform: translateY(0);
+    }
+
+    /* Enterprise Metric Row */
+    .enterprise-metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 4rem;
+    }
+
+    .metric-card {
+      background-color: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: left;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .metric-desc {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    /* =========================================================================
+       PAGE 2: STANDARD AUTH / LOGIN PAGE
+       ========================================================================= */
+    .view-auth {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg-page);
+      padding: 6rem 1.5rem 3rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 2.25rem 2rem;
+      box-shadow: none;
+      margin: 0 auto;
+    }
+
+    .auth-header {
+      margin-bottom: 1.75rem;
+      text-align: left;
+    }
+
+    .auth-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .auth-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.75rem 0.875rem;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--brand-blue);
+    }
+
+    .btn-submit-primary {
+      width: 100%;
+      background-color: var(--brand-blue);
+      color: #FFFFFF;
+      border: none;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit-primary:hover {
+      background-color: var(--brand-blue-hover);
+    }
+
+    .auth-secondary-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .link-request-access {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .link-request-access:hover {
+      color: var(--brand-blue);
+      text-decoration: underline;
+    }
+
+    /* Clean Divider with "OR" */
+    .divider-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.75rem 0;
+    }
+
+    .divider-line {
+      width: 100%;
+      height: 1px;
+      background-color: var(--border-color);
+      border: none;
+    }
+
+    .divider-text {
+      position: absolute;
+      background-color: var(--bg-card);
+      padding: 0 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Jury Bypass Button */
+    .btn-jury-bypass {
+      width: 100%;
+      background-color: rgba(59, 130, 246, 0.08);
+      border: 1px solid var(--brand-blue);
+      color: var(--brand-blue);
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-jury-bypass:hover {
+      background-color: rgba(59, 130, 246, 0.18);
+      border-color: #60A5FA;
+    }
+
+    .jury-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .btn-back-link {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.8125rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 1.5rem;
+      margin-left: auto;
+      margin-right: auto;
+      transition: color 0.15s ease;
+    }
+
+    .btn-back-link:hover {
+      color: var(--text-primary);
+    }
+
+    /* Feedback Alert */
+    .feedback-alert {
+      display: none;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      margin-top: 1.25rem;
+    }
+
+    .feedback-alert.success {
+      display: block;
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid #10B981;
+      color: #6EE7B7;
+    }
+
+    .feedback-alert.error {
+      display: block;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid #EF4444;
+      color: #FCA5A5;
+    }
+
+    /* =========================================================================
+       MEDIA QUERIES (DESKTOP & TABLET ENHANCEMENTS)
+       ========================================================================= */
+    @media (min-width: 768px) {
+      .navbar {
+        padding: 0 3rem;
+      }
+
+      .enterprise-metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .view-landing {
+        padding: 8rem 2rem 4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <span>Gaganacakṣuḥ</span>
+      <span class="nav-brand-badge">Enterprise</span>
+    </div>
+    <div class="nav-actions">
+      <button type="button" class="btn-nav-signin" id="btn-nav-signin">Sign In</button>
+    </div>
+  </header>
+
+  <!-- =======================================================================
+       PAGE 1: ENTERPRISE LANDING PAGE (DEFAULT VIEW)
+       ======================================================================= -->
+  <main class="view-landing" id="view-landing">
+
+    <!-- TRACKED VESSEL BLIP SIMULATION -->
+    <div class="tracked-ship-blip" aria-label="Simulated tracked vessel in Arabian Sea">
+      <div class="blip-telemetry-tag">
+        <span>TRACKED</span> // MMSI 4124976
+      </div>
+    </div>
+
+    <!-- HERO SECTION (CENTER) -->
+    <div class="hero-content">
+      <div class="hero-category">
+        Autonomous Maritime Forensics
+      </div>
+
+      <h1 class="hero-title">
+        Autonomous Maritime<br />Forensics Engine.
+      </h1>
+
+      <p class="hero-subtitle">
+        Mathematical attribution of illegal oil spills to evasive dark ships.
+      </p>
+
+      <button type="button" class="btn-cta-primary" id="btn-enter-gateway">
+        <span>Enter Secure Gateway</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+
+      <!-- ENTERPRISE METRICS / VALUE PILLARS -->
+      <div class="enterprise-metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Satellite Ingestion</div>
+          <div class="metric-value">Sentinel SAR</div>
+          <div class="metric-desc">Continuous high-resolution C-band radar backscatter damping analysis.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Advection Attribution</div>
+          <div class="metric-value">Lagrangian Model</div>
+          <div class="metric-desc">Reverse particle backcasting forced by INCOIS currents & ERA5 winds.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Evidence Verification</div>
+          <div class="metric-value">ISO/IEC 27037</div>
+          <div class="metric-desc">Cryptographically sealed audit trails ready for admiralty court submission.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- =======================================================================
+       PAGE 2: STANDARD AUTH / LOGIN PAGE
+       ======================================================================= -->
+  <section class="view-auth" id="view-auth">
+    <div class="auth-card">
+
+      <div class="auth-header">
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-subtitle">Enter your official credentials to access the command terminal.</p>
+      </div>
+
+      <!-- OFFICIAL ACCESS FORM -->
+      <form id="auth-form" onsubmit="return false;">
+        <div class="form-group">
+          <label class="form-label" for="official-email">Official Email</label>
+          <input
+            type="email"
+            id="official-email"
+            class="form-input"
+            placeholder="officer.icg@mod.gov.in"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            placeholder="••••••••••••"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <button type="button" class="btn-submit-primary" id="btn-signin">
+          Sign In
+        </button>
+
+        <div class="auth-secondary-actions">
+          <a href="#" class="link-request-access" id="link-request-access">Request Access</a>
+        </div>
+      </form>
+
+      <!-- CLEAN OR DIVIDER -->
+      <div class="divider-container">
+        <hr class="divider-line" />
+        <span class="divider-text">OR</span>
+      </div>
+
+      <!-- SIH JURY BYPASS -->
+      <button type="button" class="btn-jury-bypass" id="btn-sih-jury-direct">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>SIH Jury Direct Access</span>
+      </button>
+      <p class="jury-note">Bypasses standard Auth for live demonstration.</p>
+
+      <!-- FEEDBACK MESSAGE -->
+      <div class="feedback-alert" id="feedback-alert"></div>
+
+      <!-- BACK TO OVERVIEW -->
+      <button type="button" class="btn-back-link" id="btn-back-overview">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Back to Overview</span>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       INTERACTIVE ROUTING SCRIPT
+       ======================================================================= -->
+  <script>
+    const viewLanding = document.getElementById('view-landing');
+    const viewAuth = document.getElementById('view-auth');
+    const btnEnterGateway = document.getElementById('btn-enter-gateway');
+    const btnNavSignIn = document.getElementById('btn-nav-signin');
+    const btnBackOverview = document.getElementById('btn-back-overview');
+    const btnSignIn = document.getElementById('btn-signin');
+    const linkRequestAccess = document.getElementById('link-request-access');
+    const btnSihJuryDirect = document.getElementById('btn-sih-jury-direct');
+    const feedbackAlert = document.getElementById('feedback-alert');
+
+    function showAuthView() {
+      viewLanding.style.display = 'none';
+      viewAuth.style.display = 'flex';
+      window.scrollTo(0, 0);
+    }
+
+    function showLandingView() {
+      viewAuth.style.display = 'none';
+      viewLanding.style.display = 'flex';
+      window.scrollTo(0, 0);
+    }
+
+    function setFeedback(msg, type = 'info') {
+      feedbackAlert.textContent = msg;
+      feedbackAlert.className = `feedback-alert ${type}`;
+    }
+
+    // Navigation events
+    btnEnterGateway.addEventListener('click', showAuthView);
+    btnNavSignIn.addEventListener('click', showAuthView);
+    btnBackOverview.addEventListener('click', showLandingView);
+
+    // Official Sign In handler
+    btnSignIn.addEventListener('click', () => {
+      const email = document.getElementById('official-email').value.trim();
+      const pwd = document.getElementById('password').value;
+
+      if (!email || !pwd) {
+        setFeedback('Please specify both official email and password.', 'error');
+        return;
+      }
+
+      setFeedback('Verifying credentials...', 'info');
+      setTimeout(() => {
+        setFeedback(`Authentication successful for ${email}. Accessing dashboard...`, 'success');
+      }, 500);
+    });
+
+    // Request Access handler
+    linkRequestAccess.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('official-email').value.trim() || 'officer.icg@mod.gov.in';
+      setFeedback(`Access request generated for ${email}. An authorization token has been sent to your supervisor.`, 'success');
+    });
+
+    // Jury Direct Access bypass
+    btnSihJuryDirect.addEventListener('click', () => {
+      setFeedback('SIH Jury Direct Access verified. Launching operational command...', 'success');
+    });
+  </script>
+</body>
+</html>
