@@ -48,7 +48,7 @@ from data.zenodo_sar_samples import load_benchmark_sar_scene
 
 # Page Configuration
 st.set_page_config(
-    page_title="GAGANACAKṢUḤ // Multi-Sat Tactical Command & Attribution",
+    page_title="GAGANACAKSUH // Autonomous Maritime Forensics",
     page_icon="🛰️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -67,176 +67,217 @@ st.markdown("""
         font-family: 'JetBrains+Mono', monospace !important;
     }
 
-    /* Tactical Background & Panels */
+    /* Tactical Background & Panels - Solid Maritime Theme (No Neon) */
     .stApp {
-        background-color: #060913;
-        color: #dbe4f0;
+        background-color: #0B0F17 !important;
+        color: #E2E8F0 !important;
     }
 
-    /* Sidebar Customization */
+    /* Left Sidebar Customization */
     section[data-testid="stSidebar"] {
-        background-color: #0b1120 !important;
-        border-right: 1px solid #1e293b;
+        background-color: #161F30 !important;
+        border-right: 1px solid rgba(148, 163, 184, 0.15) !important;
+    }
+    section[data-testid="stSidebar"][aria-expanded="true"] {
+        min-width: 325px !important;
     }
 
-    /* Military HUD Cards */
+    /* Top Sticky Header Row */
+    div[data-testid="stHorizontalBlock"]:first-of-type {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 990 !important;
+        background-color: #0B0F17 !important;
+        padding-top: 6px !important;
+        padding-bottom: 10px !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.15) !important;
+        margin-bottom: 14px !important;
+    }
+
+    /* HUD Cards - Solid Tones (No Neon, No Glows) */
     .hud-card {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.65) 100%);
-        border: 1px solid #1e293b;
-        border-left: 4px solid #00f0ff;
+        background: #161F30;
+        border: 1px solid #283548;
+        border-left: 4px solid #38BDF8;
         padding: 14px 18px;
         border-radius: 6px;
         margin-bottom: 14px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        color: #E2E8F0;
     }
 
     .hud-card-alert {
-        background: linear-gradient(135deg, rgba(38, 12, 18, 0.85) 0%, rgba(69, 10, 10, 0.65) 100%);
-        border: 1px solid #7f1d1d;
-        border-left: 4px solid #ef4444;
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        border-left: 4px solid #EF4444;
         padding: 14px 18px;
         border-radius: 6px;
         margin-bottom: 14px;
+        color: #E2E8F0;
+    }
+
+    .hud-card-warning {
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        border-left: 4px solid #F59E0B;
+        padding: 14px 18px;
+        border-radius: 6px;
+        margin-bottom: 14px;
+        color: #E2E8F0;
     }
 
     .hud-card-success {
-        background: linear-gradient(135deg, rgba(6, 30, 20, 0.85) 0%, rgba(6, 78, 59, 0.65) 100%);
-        border: 1px solid #065f46;
-        border-left: 4px solid #10b981;
+        background: rgba(16, 185, 129, 0.08);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        border-left: 4px solid #10B981;
         padding: 14px 18px;
         border-radius: 6px;
         margin-bottom: 14px;
+        color: #E2E8F0;
     }
 
-    /* Status LED indicator */
+    /* Status LED indicator - Solid Colors (No Neon Box Shadows) */
     .led-live {
         display: inline-block;
-        width: 10px;
-        height: 10px;
-        background-color: #10b981;
+        width: 8px;
+        height: 8px;
+        background-color: #10B981;
         border-radius: 50%;
-        box-shadow: 0 0 10px #10b981;
         margin-right: 6px;
-        animation: pulse 2s infinite;
     }
 
     .led-alert {
         display: inline-block;
-        width: 10px;
-        height: 10px;
-        background-color: #ef4444;
+        width: 8px;
+        height: 8px;
+        background-color: #EF4444;
         border-radius: 50%;
-        box-shadow: 0 0 10px #ef4444;
         margin-right: 6px;
-        animation: pulse 1s infinite;
     }
 
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.3; }
-        100% { opacity: 1; }
+    .led-warning {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background-color: #F59E0B;
+        border-radius: 50%;
+        margin-right: 6px;
     }
 
-    /* Metric KPI containers */
+    /* Metric KPI containers - Solid Crisp White (No Glowing Cyan/Neon) */
     div[data-testid="stMetricValue"] {
         font-family: 'JetBrains Mono', monospace !important;
-        font-size: 1.8rem !important;
-        font-weight: 700;
-        color: #00f0ff !important;
+        font-size: 1.65rem !important;
+        font-weight: 700 !important;
+        color: #F8FAFC !important;
     }
 
-    /* Button Styling */
+    div[data-testid="stMetricLabel"] {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.72rem !important;
+        color: #94A3B8 !important;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    div[data-testid="stMetricDelta"] svg {
+        fill: #10B981 !important;
+    }
+    div[data-testid="stMetricDelta"] div {
+        color: #10B981 !important;
+        font-weight: 600 !important;
+    }
+
+    /* Buttons - Solid Maritime Styling */
     .stButton > button {
-        background-color: #0f172a;
-        color: #00f0ff;
-        border: 1px solid #00f0ff;
+        background-color: #161F30 !important;
+        color: #E2E8F0 !important;
+        border: 1px solid #334155 !important;
         font-weight: 600;
         font-family: 'JetBrains Mono', monospace;
         letter-spacing: 0.5px;
-        border-radius: 4px;
-        transition: all 0.2s ease-in-out;
+        border-radius: 6px;
+        transition: all 0.15s ease-in-out;
     }
 
     .stButton > button:hover {
-        background-color: #00f0ff;
-        color: #060913;
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.6);
-        border-color: #00f0ff;
+        background-color: #1E293B !important;
+        color: #38BDF8 !important;
+        border-color: #38BDF8 !important;
     }
 
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background-color: #090e1a;
-        padding: 6px;
-        border-radius: 8px;
-        border: 1px solid #1e293b;
+    /* Sidebar Radio Navigation (Compact boxes, reduced text size, full-width alignment with other sidebar components) */
+    section[data-testid="stSidebar"] .stRadio,
+    section[data-testid="stSidebar"] div[data-testid="stRadio"],
+    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div,
+    section[data-testid="stSidebar"] div[role="radiogroup"] {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 5px !important;
     }
-
-    .stTabs [data-baseweb="tab"] {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.85rem;
-        padding: 8px 16px;
-        border-radius: 6px;
-        color: #94a3b8;
+    section[data-testid="stSidebar"] div[role="radiogroup"] label {
+        display: flex !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+        background: #0B0F17 !important;
+        border: 1px solid #1E293B !important;
+        border-radius: 4px !important;
+        padding: 5px 8px !important;
+        margin: 0 !important;
+        color: #E2E8F0 !important;
+        font-size: 0.64rem !important;
+        font-weight: 500 !important;
+        letter-spacing: -0.015em !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        transition: all 0.15s ease !important;
     }
-
-    .stTabs [aria-selected="true"] {
-        background-color: #1e293b !important;
-        color: #00f0ff !important;
-        border-bottom: 2px solid #00f0ff !important;
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+        border-color: #38BDF8 !important;
+        background: #111A2E !important;
     }
-
-    /* 3D Floating Depth Cards for Landing Page Metrics */
-    .metric-3d-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        perspective: 1200px;
-        margin: 18px 0 28px 0;
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {
+        border-color: #38BDF8 !important;
+        background: #162032 !important;
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
     }
-
-    .metric-card-3d {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.82) 100%);
-        border: 1px solid rgba(0, 240, 255, 0.28);
-        border-radius: 12px;
-        padding: 16px 18px;
-        transform: rotateX(6deg) rotateY(-2deg) translateZ(12px);
-        transform-style: preserve-3d;
-        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.65), 0 0 22px rgba(0, 240, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease, border-color 0.35s ease;
-        backdrop-filter: blur(8px);
+    section[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child {
+        margin-right: 6px !important;
+        flex-shrink: 0 !important;
     }
-
-    .metric-card-3d:hover {
-        transform: translateY(-8px) rotateX(0deg) rotateY(0deg) translateZ(28px);
-        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8), 0 0 32px rgba(0, 240, 255, 0.4);
-        border-color: #00f0ff;
+    section[data-testid="stSidebar"] div[role="radiogroup"] label > div:last-child {
+        flex: 1 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
-
-    .metric-3d-val {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 1.65rem;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        margin-bottom: 4px;
+    section[data-testid="stSidebar"] div[role="radiogroup"] label p {
+        font-size: 0.64rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
     }
-
-    .metric-3d-lbl {
-        font-size: 0.75rem;
-        color: #94a3b8;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-family: 'JetBrains Mono', monospace;
-        margin-bottom: 4px;
+    /* Profile Popover Button (Solid Styling) */
+    div[data-testid="stPopover"] > button {
+        border-radius: 9999px !important;
+        background: #161F30 !important;
+        border: 1px solid #38BDF8 !important;
+        color: #E2E8F0 !important;
+        padding: 5px 16px !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
     }
-
-    .metric-3d-sub {
-        font-size: 0.72rem;
-        color: #64748b;
-        font-family: monospace;
+    div[data-testid="stPopover"] > button:hover {
+        background: #1E293B !important;
+        border-color: #38BDF8 !important;
+        color: #38BDF8 !important;
     }
-</style>
+    </style>
 """, unsafe_allow_html=True)
 
 # Session State Initialization
@@ -540,8 +581,8 @@ def create_pydeck_3d_tactical_deck(
 
     tooltip = {
         "html": """
-        <div style="background:#0f172a; color:#e2e8f0; padding:8px 10px; border:1px solid #00f0ff; border-radius:4px; font-family:'Courier New', monospace; font-size:11px;">
-            <b style="color:#00f0ff;">{name}</b><br/>
+        <div style="background:#0f172a; color:#e2e8f0; padding:8px 10px; border:1px solid #38BDF8; border-radius:4px; font-family:'Courier New', monospace; font-size:11px;">
+            <b style="color:#38BDF8;">{name}</b><br/>
             <span>MMSI: <b>{mmsi}</b></span><br/>
             <span>Type: {type}</span><br/>
             <span>Attribution / SOG: <b>{attribution}</b> | {sog}</span><br/>
@@ -581,8 +622,8 @@ def render_tactical_leaflet_map(
         map_perspective = st.radio(
             "Select Tactical View Mode:",
             [
-                "🛰️ 3D Tactical Perspective (Pydeck DeckGL: 50° Pitch & Extruded Beacons)",
-                "🗺️ 2D Tactical Basemap (NASA GIBS WMS & Leaflet Native Radar)"
+                "🌐 2D Tactical Basemap (NASA GIBS WMS & Leaflet Native Radar)",
+                "✨ 3D Tactical Perspective (Pydeck DeckGL: 50° Pitch & Extruded Beacons)"
             ],
             index=0,
             horizontal=False
@@ -694,7 +735,7 @@ def render_2d_leaflet_component(
             .custom-popup .leaflet-popup-content-wrapper {{
                 background: #0f172a;
                 color: #e2e8f0;
-                border: 1px solid #00f0ff;
+                border: 1px solid #38BDF8;
                 border-radius: 4px;
                 font-family: 'Courier New', monospace;
                 font-size: 11px;
@@ -788,7 +829,7 @@ def render_2d_leaflet_component(
             // Layer 4: Commercial AIS Vessels & Kinematic Tracks
             var vessels = {vessels_json};
             vessels.forEach(function(v) {{
-                var color = '#00f0ff';
+                var color = '#38BDF8';
                 if (v.is_spoofed) color = '#f97316';
                 if (v.has_gap) color = '#ef4444';
 
@@ -903,51 +944,31 @@ def render_landing_page():
         /* Native Streamlit Overlay Buttons with High Z-Index */
         div.st-key-btn_top_gateway {
             position: fixed !important;
-            top: 2rem !important;
+            top: 1.5rem !important;
             right: 2.5rem !important;
-            z-index: 999999 !important;
+            z-index: 9999999 !important;
+            width: auto !important;
             pointer-events: auto !important;
         }
         div.st-key-btn_top_gateway button {
-            background-color: transparent !important;
+            background: rgba(16, 25, 40, 0.85) !important;
+            backdrop-filter: blur(8px) !important;
             color: #F8FAFC !important;
-            border: 1px solid rgba(248, 250, 252, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.35) !important;
             border-radius: 6px !important;
-            padding: 8px 22px !important;
-            font-size: 0.875rem !important;
-            font-weight: 500 !important;
+            padding: 8px 24px !important;
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            font-family: inherit !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+            cursor: pointer !important;
             transition: all 0.2s ease !important;
         }
         div.st-key-btn_top_gateway button:hover {
-            background-color: rgba(248, 250, 252, 0.12) !important;
-            border-color: #FFFFFF !important;
-        }
-        div.st-key-btn_hero_cta {
-            position: fixed !important;
-            bottom: 12vh !important;
-            left: 8% !important;
-            z-index: 999999 !important;
-            pointer-events: auto !important;
-        }
-        div.st-key-btn_hero_cta button {
-            background-color: #3B82F6 !important;
-            color: #FFFFFF !important;
-            border: none !important;
-            border-radius: 6px !important;
-            padding: 13px 28px !important;
-            font-size: 0.875rem !important;
-            font-weight: 700 !important;
-            letter-spacing: 0.04em !important;
-            text-transform: uppercase !important;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4) !important;
-            transition: all 0.2s ease !important;
-        }
-        div.st-key-btn_hero_cta button:hover {
-            background-color: #2563EB !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5) !important;
-        }
-    </style>
+            background: #1E293B !important;
+            border-color: #38BDF8 !important;
+            color: #38BDF8 !important;
+        }</style>
     """, unsafe_allow_html=True)
 
     landing_file = Path(__file__).parent / "static" / "fullbleed_landing.html"
@@ -956,24 +977,18 @@ def render_landing_page():
             html_landing = f.read()
     else:
         html_landing = """
-        <div style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; margin: 0; padding: 0; background: #0B1120; color: #F8FAFC;">
-            <h1>Gaganacaksuh</h1>
+        <div style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; margin: 0; padding: 0; background: #0B0F17; color: #E2E8F0;">
+            <h1>GAGANACAKSUH</h1>
         </div>
         """
-    components.html(html_landing, height=1000, scrolling=False)
-
-    # Both landing page buttons open the Official Sign-In Gateway
+    # Fixed Top-Right Native Sign In Button
     if st.button("Sign In", key="btn_top_gateway"):
         st.session_state["page"] = "auth_gateway"
         st.session_state["authenticated"] = False
         st.query_params.clear()
         st.rerun()
 
-    if st.button("ENTER SECURE GATEWAY", key="btn_hero_cta", type="primary"):
-        st.session_state["page"] = "auth_gateway"
-        st.session_state["authenticated"] = False
-        st.query_params.clear()
-        st.rerun()
+    components.html(html_landing, height=1000, scrolling=False)
 
 
 # =============================================================================
@@ -1190,17 +1205,12 @@ def render_auth_gateway():
                     else:
                         st.error("Invalid credentials. Verify your service email and passkey.")
 
-        # Secondary "Request Access" Link
-        req_col1, req_col2, req_col3 = st.columns([1, 2, 1])
-        with req_col2:
-            if st.button("Request Clearance", key="btn-request-access", use_container_width=True):
-                email_clean = email_input.strip()
-                if not email_clean:
-                    st.warning("⚠️ Please enter your official service email above before requesting clearance.")
-                elif "@" not in email_clean or "." not in email_clean:
-                    st.error("⚠️ Please enter a valid official service email address (e.g. officer@mod.gov.in).")
-                else:
-                    st.info(f"Clearance verification request generated for {email_clean}. Follow the confirmation link sent to your official inbox.")
+        # Professional Admin Registration Notice
+        st.markdown("""
+        <div style="font-size: 0.78rem; color: #94A3B8; text-align: center; margin-top: 14px; padding: 10px 14px; background: rgba(22, 31, 48, 0.6); border: 1px solid #161F30; border-radius: 6px; line-height: 1.5; font-family: -apple-system, sans-serif;">
+            🔒 <b>Access Provisioning Notice:</b> Only the platform System Administrator can register users and provision service credentials. Authorized personnel should use their issued credentials to log in.
+        </div>
+        """, unsafe_allow_html=True)
 
         # Clean Hairline Divider with "OR"
         st.markdown(textwrap.dedent("""
@@ -1252,50 +1262,82 @@ def render_command_dashboard():
     badge_bg = "#064e3b" if is_officer else "#1e1b4b"
     badge_fg = "#10b981" if is_officer else "#818cf8"
 
-    st.markdown(f"""
-    <div style="background-color: #0b1120; border: 1px solid #1e293b; padding: 10px 18px; border-radius: 6px; margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center;">
-        <div>
-            <span style="font-family: 'JetBrains Mono', monospace; font-size: 1.15rem; font-weight: 700; color: #00f0ff;">
-                GAGANACAKṢUḤ // TACTICAL COMMAND HUB
+    # --- TOP STICKY HEADER (GAGANACAKSUH TOP-LEFT, PROFILE TOP-RIGHT) ---
+    col_hdr_left, col_hdr_right = st.columns([5.5, 1.2])
+    with col_hdr_left:
+        st.markdown(f"""
+        <div style="display:flex; align-items:baseline; gap:16px; margin-top:-6px; margin-bottom:8px;">
+            <span style="font-family:'Cinzel', Georgia, serif; font-size:2.3rem; font-weight:800; letter-spacing:0.08em; color:#E2E8F0; text-transform:uppercase;">
+                GAGANACAKSUH
             </span>
-            <span style="margin-left: 12px; font-size: 0.8rem; color: #94a3b8; font-family: monospace;">
-                UTC TIME: {time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())}Z &bull; SECTOR: ARABIAN SEA EEZ
-            </span>
-        </div>
-        <div style="display:flex; align-items:center; gap: 10px;">
-            <span style="background-color: {badge_bg}; color: {badge_fg}; font-family: monospace; font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; border: 1px solid {badge_fg};">
-                {user['officer_name']} [{user['service_number']}] &bull; {user['role']}
+            <span style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:#94A3B8; letter-spacing:0.04em;">
+                UTC: {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())}Z &bull; SECTOR: ARABIAN SEA EEZ
             </span>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    with col_hdr_right:
+        with st.popover(f"👤 {user['officer_name'].split()[0]}", use_container_width=True):
+            st.markdown(f"""
+            <div style="text-align: center; padding: 4px 0 12px 0; border-bottom: 1px solid #161F30;">
+                <div style="width: 52px; height: 52px; border-radius: 50%; background: #38BDF8; color: #0B0F17; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; margin: 0 auto 8px auto; border: 2px solid #E2E8F0;">
+                    {user['officer_name'][0].upper()}
+                </div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: #E2E8F0;">{user['officer_name']}</div>
+                <div style="font-size: 0.72rem; color: #94A3B8; font-family: monospace;">{user['role']}</div>
+            </div>
+            <div style="background: #0B0F17; border-radius: 6px; padding: 10px 12px; margin: 10px 0; font-size: 0.75rem; color: #E2E8F0; font-family: monospace; line-height: 1.8;">
+                <span style="color: #38BDF8;">SERVICE ID:</span> {user['service_number']}<br/>
+                <span style="color: #38BDF8;">BASE:</span> {user['base']}<br/>
+                <span style="color: #38BDF8;">CLEARANCE:</span> <span style="font-weight: 600; color: #38BDF8;">{user['meta']['clearance_level']}</span><br/>
+                <span style="color: #94A3B8; font-size: 0.65rem;">SESSION: {user['session_token'][:18]}...</span>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("🚪 Terminate Session / Log Out", key="btn_hdr_logout", use_container_width=True, type="primary"):
+                st.session_state["authenticated"] = False
+                st.session_state["user_profile"] = None
+                st.session_state["page"] = "auth_gateway"
+                st.query_params.clear()
+                st.rerun()
 
     # --- SIDEBAR CONTROLS & TELEMETRY ---
     with st.sidebar:
+        st.markdown("<b style='color:#E2E8F0; font-family:monospace; font-size:0.85rem; letter-spacing:0.06em;'>PIPELINE STAGES</b>", unsafe_allow_html=True)
+
+        stage_options = [
+            "Tactical Common Operating Picture",
+            "Copernicus Multi-Spectral WMS",
+            "Neural Segmentation & Drift Model",
+            "Zero-Trust AIS Telemetry Audit",
+            "Cryptographic Chain of Custody",
+            "Autonomous Vessel Reroute & Dispatch"
+        ] if is_officer else [
+            "Tactical Common Operating Picture",
+            "Zero-Trust AIS Telemetry Audit",
+            "Cryptographic Chain of Custody"
+        ]
+
+        curr_stage = st.session_state.get("active_stage", stage_options[0])
+        curr_idx = stage_options.index(curr_stage) if curr_stage in stage_options else 0
+
+        active_stage = st.radio(
+            "Select Pipeline Stage:",
+            stage_options,
+            index=curr_idx,
+            key="sidebar_stage_radio",
+            label_visibility="collapsed"
+        )
+        st.session_state["active_stage"] = active_stage
+
         st.markdown(f"""
-        <div style="border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 12px;">
-            <span class="led-live"></span><b style="color:#00f0ff; font-family:monospace;">OPERATOR CLEARANCE CARD</b>
-            <div style="font-size:0.8rem; margin-top:6px; color:#cbd5e1;">
-                <b>Name:</b> {user['officer_name']}<br/>
-                <b>Service:</b> {user['service_number']}<br/>
-                <b>Base:</b> {user['base']}<br/>
-                <b>Level:</b> <span style="color:#38bdf8;">{user['meta']['clearance_level']}</span>
-            </div>
-            <div style="margin-top:8px; background-color:#020617; padding:6px; border-radius:4px; font-family:monospace; font-size:0.65rem; word-break:break-all; color:#64748b;">
-                TOKEN: {user['session_token']}
-            </div>
+        <div style="margin-top: 8px; margin-bottom: 12px; padding: 6px 10px; background-color: #0B0F17; border-radius: 4px; border: 1px solid #1E293B; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #94A3B8; line-height: 1.5;">
+            <div><b>ZONE:</b> <span style="color:#E2E8F0;">SECTOR 4</span></div>
+            <div><b>SENSORS:</b> 4 ACTIVE</div>
+            <div><b>COURT DOCKET:</b> VALID</div>
         </div>
         """, unsafe_allow_html=True)
 
-        if st.button("TERMINATE SESSION / LOGOUT"):
-            st.session_state["authenticated"] = False
-            st.session_state["user_profile"] = None
-            st.session_state["page"] = "auth_gateway"
-            st.query_params.clear()
-            st.rerun()
-
         st.markdown("---")
-        st.markdown("<b style='color:#00f0ff; font-family:monospace;'>SURVEILLANCE SECTOR SELECTOR</b>", unsafe_allow_html=True)
+        st.markdown("<b style='color:#38BDF8; font-family:monospace;'>SURVEILLANCE SECTOR SELECTOR</b>", unsafe_allow_html=True)
         reg_names = {k: v["name"] for k, v in REGIONS.items()}
         selected_reg_key = st.selectbox(
             "Active Maritime Theatre:",
@@ -1323,7 +1365,7 @@ def render_command_dashboard():
         """, unsafe_allow_html=True)
 
         st.markdown("---")
-        st.markdown("<b style='color:#00f0ff; font-family:monospace;'>CONSTELLATION TELEMETRY</b>", unsafe_allow_html=True)
+        st.markdown("<b style='color:#38BDF8; font-family:monospace;'>CONSTELLATION TELEMETRY</b>", unsafe_allow_html=True)
         for c_key, c_info in CONSTELLATIONS.items():
             st.markdown(f"""
             <div style="font-size:0.75rem; margin-bottom:6px; color:#cbd5e1; font-family:monospace;">
@@ -1395,137 +1437,85 @@ def render_command_dashboard():
             suspect_data=suspect
         )
 
-    # --- TOP SUMMARY METRICS STRIP ---
-    unet_res = st.session_state["unet_results"]
-    ais_res = st.session_state["ais_results"]
-    backcast_res = st.session_state["backcast_results"]
-    docket = st.session_state["docket"]
+    # --- HELPER FUNCTIONS FOR EACH PIPELINE STAGE ---
+    def render_tactical_cop_stage():
+        with st.container(border=True):
+            st.subheader("Tactical Common Operating Picture", divider="blue")
+            st.caption("Real-Time Maritime Common Operating Picture (COP) integrating Sentinel-1 C-Band SAR, U-Net slick contours, Lagrangian origin cone, AIS transponder tracks, and navigation exclusion corridors.")
 
-    m1, m2, m3, m4, m5 = st.columns(5)
-    with m1:
-        st.metric("OIL SLICK AREA", f"{unet_res['total_area_sq_km']} km²", f"Confidence {unet_res['mean_confidence_score']*100:.1f}%")
-    with m2:
-        st.metric("FAY SPREADING AGE", f"{unet_res.get('estimated_age_hours', 12.0)} hrs", unet_res.get("fay_regime", "Viscous"))
-    with m3:
-        st.metric("TRACKED VESSELS", f"{ais_res['total_vessels_tracked']}", f"{ais_res['spoofed_vessels_detected']} GPS Spoofed")
-    with m4:
-        st.metric("DARK SHIPS FOUND", f"{ais_res['dark_vessels_detected']}", "SAR Hull Scan Confirmed")
-    with m5:
-        st.metric("COURT DOCKET", "SEALED", "SHA-256 Validated")
+            with st.container(border=True):
+                render_tactical_leaflet_map(
+                    center=unet_res["centroid"],
+                    zoom=10,
+                    slick_polygons=unet_res["polygons"],
+                    backcast_data=backcast_res,
+                    vessels=ais_res["audited_vessels"],
+                    dark_ships=ais_res["dark_ships"],
+                    exclusion_polygon=st.session_state["exclusion_zone"]["exclusion_polygon"],
+                    reroutes=st.session_state["reroutes"]
+                )
 
-    # --- MAIN INTERACTIVE TACTICAL WORKBENCH TABS ---
-    if is_judge:
-        # Tribunal Judge view is focused on the forensic legal chain of custody and tamper validation
-        tab_vault, tab_map, tab_audit = st.tabs([
-            "⚖️ ISO/IEC 27037 FORENSIC EVIDENCE VAULT",
-            "🗺️ TACTICAL RADAR EVIDENCE MAP",
-            "🔍 ZERO-TRUST AIS & RADAR ATTRIBUTION"
-        ])
-    else:
-        # Command Officer has full 5-stage operational pipeline tabs
-        tab_map, tab_sat, tab_ai, tab_ais, tab_vault, tab_reroute = st.tabs([
-            "🗺️ TACTICAL RADAR HUD MAP",
-            "🛰️ STAGE 1: COPERNICUS WMS & DUAL-SATELLITE",
-            "🧠 STAGE 2: U-NET AI & HYDRODYNAMIC BACKCAST",
-            "🛡️ STAGE 3: ZERO-TRUST AIS & SPOOFING RADAR",
-            "⚖️ STAGE 4: ISO/IEC 27037 EVIDENCE VAULT & LEDGER",
-            "🚨 STAGE 5: AUTOMATED REROUTING & VHF DISPATCH"
-        ])
+            with st.container(border=True):
+                st.markdown(textwrap.dedent("""
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; font-family: monospace; font-size: 0.72rem; padding: 4px 0;">
+                    <div style="flex: 1 1 170px; max-width: 220px; min-width: 150px; background-color: #1e1017; border: 1px solid #3d1724; border-left: 3px solid #ff0055; padding: 8px 10px; border-radius: 4px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div><b style="color: #ff0055;">RED SOLID</b></div>
+                        <div style="color: #e2e8f0; margin-top: 2px;">Mineral Oil Slick (U-Net)</div>
+                    </div>
+                    <div style="flex: 1 1 170px; max-width: 220px; min-width: 150px; background-color: #1f190e; border: 1px solid #3d2b14; border-left: 3px solid #ffaa00; padding: 8px 10px; border-radius: 4px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div><b style="color: #ffaa00;">YELLOW DASH</b></div>
+                        <div style="color: #e2e8f0; margin-top: 2px;">Lagrangian Origin Cone</div>
+                    </div>
+                    <div style="flex: 1 1 170px; max-width: 220px; min-width: 150px; background-color: #11202e; border: 1px solid #1c354d; border-left: 3px solid #38BDF8; padding: 8px 10px; border-radius: 4px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div><b style="color: #38BDF8;">CYAN LINE</b></div>
+                        <div style="color: #e2e8f0; margin-top: 2px;">Compliant AIS Tracks</div>
+                    </div>
+                    <div style="flex: 1 1 170px; max-width: 220px; min-width: 150px; background-color: #2a110a; border: 1px solid #4a1d12; border-left: 3px solid #f97316; padding: 8px 10px; border-radius: 4px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div><b style="color: #f97316;">ORANGE MARKER</b></div>
+                        <div style="color: #e2e8f0; margin-top: 2px;">GPS Spoofed (&gt;35 kts)</div>
+                    </div>
+                    <div style="flex: 1 1 170px; max-width: 220px; min-width: 150px; background-color: #2e0d16; border: 1px solid #4f1523; border-left: 3px solid #ff0033; padding: 8px 10px; border-radius: 4px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div><b style="color: #ff0033;">PULSING CRIMSON</b></div>
+                        <div style="color: #e2e8f0; margin-top: 2px;">SAR Dark Ship</div>
+                    </div>
+                </div>
+                """).strip(), unsafe_allow_html=True)
 
-    # =========================================================================
-    # TAB: TACTICAL RADAR HUD MAP
-    # =========================================================================
-    with tab_map:
-        st.markdown("""
-        <div class="hud-card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <b style="color:#00f0ff; font-family:monospace;">REAL-TIME MARITIME COMMON OPERATING PICTURE (COP)</b>
-                <span style="font-family:monospace; font-size:0.75rem; color:#94a3b8;">
-                    LAYERS: S1-SAR &bull; U-NET SLICK &bull; DRIFT CONE &bull; AIS TELEMETRY &bull; DARK SHIPS &bull; EXCLUSION CORRIDOR
-                </span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
 
-        render_tactical_leaflet_map(
-            center=unet_res["centroid"],
-            zoom=10,
-            slick_polygons=unet_res["polygons"],
-            backcast_data=backcast_res,
-            vessels=ais_res["audited_vessels"],
-            dark_ships=ais_res["dark_ships"],
-            exclusion_polygon=st.session_state["exclusion_zone"]["exclusion_polygon"],
-            reroutes=st.session_state["reroutes"]
-        )
-
-        st.markdown(f"""
-        <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; font-family:monospace; font-size:0.75rem;">
-            <div style="background-color:#1e1017; border-left:3px solid #ff0055; padding:6px; border-radius:3px;">
-                <b style="color:#ff0055;">RED SOLID</b>: Mineral Oil Slick (U-Net)
-            </div>
-            <div style="background-color:#1f190e; border-left:3px solid #ffaa00; padding:6px; border-radius:3px;">
-                <b style="color:#ffaa00;">YELLOW DASH</b>: Lagrangian Origin Cone
-            </div>
-            <div style="background-color:#11202e; border-left:3px solid #00f0ff; padding:6px; border-radius:3px;">
-                <b style="color:#00f0ff;">CYAN LINE</b>: Compliant AIS Tracks
-            </div>
-            <div style="background-color:#2a110a; border-left:3px solid #f97316; padding:6px; border-radius:3px;">
-                <b style="color:#f97316;">ORANGE MARKER</b>: GPS Spoofed (>35 kts)
-            </div>
-            <div style="background-color:#2e0d16; border-left:3px solid #ff0033; padding:6px; border-radius:3px;">
-                <b style="color:#ff0033;">PULSING CRIMSON</b>: SAR Dark Ship
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # =========================================================================
-    # TAB: STAGE 1: COPERNICUS WMS & DUAL SATELLITE
-    # =========================================================================
-    if is_officer:
-        with tab_sat:
-            st.markdown("""
-            <div class="hud-card">
-                <b style="color:#00f0ff; font-family:monospace;">STAGE 1: COPERNICUS DATA SPACE WMS & DUAL-SATELLITE ARCHITECTURE</b>
-                <p style="color:#cbd5e1; font-size:0.85rem; margin-top:4px;">
-                    Integrates Sentinel-1 C-Band SAR (all-weather dark spot detection) with Sentinel-2 Optical MSI & NOAA VIIRS
-                    to achieve automated false-positive suppression (discriminating mineral crude from biogenic algal blooms).
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
+    def render_satellite_wms_stage():
+        with st.container(border=True):
+            st.subheader("Copernicus Multi-Spectral WMS Surveillance", divider="blue")
+            st.caption("Dual-Satellite multi-sensor grid integrating Sentinel-1 C-Band SAR with Sentinel-2 Optical MSI for automated false-positive suppression (discriminating mineral crude from biogenic algal blooms).")
 
             wms_meta = get_wms_capabilities_mock(st.session_state["selected_region"])
             sar_scene = st.session_state["sar_scene"]
 
-            col_wms1, col_wms2 = st.columns([1.2, 1.8])
+            col_wms1, col_wms2 = st.columns([1.1, 1.9])
             with col_wms1:
-                st.markdown("<b style='color:#38bdf8; font-family:monospace;'>WMS Handshake & Layer Pipeline</b>", unsafe_allow_html=True)
-                st.markdown(f"""
-                <div style="background-color:#020617; border:1px solid #1e293b; padding:12px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#94a3b8;">
-                    <b>ENDPOINT:</b> {wms_meta['endpoint']}<br/>
-                    <b>CRS:</b> {wms_meta['crs']}<br/>
-                    <b>THEATRE:</b> {wms_meta['target_region']}<br/>
-                    <b>BBOX:</b> {wms_meta['bbox']}<br/>
-                    <b>STATUS:</b> <span style="color:#10b981;">STREAMING REAL-TIME 10m TILES</span>
-                </div>
-                """, unsafe_allow_html=True)
-
-                st.markdown("<br/><b style='color:#38bdf8; font-family:monospace;'>Active WMS Layers</b>", unsafe_allow_html=True)
-                for layer in wms_meta["active_layers"]:
-                    st.markdown(f"""
-                    <div style="background-color:#0b1120; border:1px solid #1e293b; padding:8px; border-radius:4px; margin-bottom:6px; font-family:monospace; font-size:0.75rem;">
-                        <span class="led-live"></span><b>{layer['title']}</b><br/>
-                        <span style="color:#64748b;">ID: {layer['layer_id']} &bull; {layer['orbit']}</span>
+                with st.container(border=True):
+                    st.markdown("**WMS STREAM HANDSHAKE & TELEMETRY**")
+                    st.markdown(textwrap.dedent(f"""
+                    <div style="font-family:monospace; font-size:0.75rem; color:#94a3b8; line-height:1.6;">
+                        <div><b>ENDPOINT:</b> {wms_meta['endpoint']}</div>
+                        <div><b>CRS:</b> {wms_meta['crs']}</div>
+                        <div><b>THEATRE:</b> {wms_meta['target_region']}</div>
+                        <div><b>BBOX:</b> {wms_meta['bbox']}</div>
+                        <div style="margin-top:4px; padding-top:4px; border-top:1px dashed #1e293b;">
+                            <b>STREAM STATUS:</b> <span style="color:#10b981; font-weight:600;">ACTIVE (10m RESOLUTION)</span>
+                        </div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    """).strip(), unsafe_allow_html=True)
+
+                with st.container(border=True):
+                    st.markdown("**ACTIVE SURVEILLANCE SENSOR LAYERS**")
+                    layers_html = "".join([f'<div style="background-color:#020617; border:1px solid #1e293b; border-radius:4px; padding:6px 8px; margin-bottom:5px; font-family:monospace; font-size:0.72rem;"><div style="display:flex; align-items:flex-start; justify-content:space-between; gap:6px;"><div style="color:#f1f5f9; font-weight:600; flex:1; min-width:0; word-break:break-word;"><span class="led-live"></span>{layer["title"]}</div><span style="color:#10b981; font-size:0.65rem; font-weight:700; flex-shrink:0; background:rgba(16,185,129,0.12); padding:2px 5px; border-radius:3px;">ONLINE</span></div><div style="color:#64748b; font-size:0.68rem; margin-top:2px; margin-left:14px;">ID: {layer["layer_id"]} &bull; {layer["orbit"]}</div></div>' for layer in wms_meta["active_layers"]])
+                    st.markdown(layers_html, unsafe_allow_html=True)
 
             with col_wms2:
-                st.markdown("<b style='color:#38bdf8; font-family:monospace;'>Multi-Sensor Dual-Layer Verification</b>", unsafe_allow_html=True)
-                
                 # Normalize NDVI for display
                 ndvi_norm = ((sar_scene["ndvi"] + 1.0) / 2.0 * 255.0).astype(np.uint8)
                 ndvi_colored = cv2.applyColorMap(ndvi_norm, cv2.COLORMAP_JET)
 
-                # Base64 encode images for pixel-perfect symmetrical grid rendering
                 sar_img = sar_scene["sar_amplitude"]
                 if sar_img.dtype != np.uint8:
                     sar_min, sar_max = float(sar_img.min()), float(sar_img.max())
@@ -1541,292 +1531,269 @@ def render_command_dashboard():
                 Image.fromarray(ndvi_colored).save(buf_ndvi, format="PNG")
                 ndvi_b64 = base64.b64encode(buf_ndvi.getvalue()).decode("utf-8")
 
-                # Perfectly symmetrical 2-column image grid
-                st.markdown(f"""
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; box-sizing: border-box; margin-top: 8px; margin-bottom: 16px;">
-                    <div style="background-color: #0b1120; border: 1px solid #1e293b; border-radius: 6px; padding: 14px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div style="font-family: monospace; font-size: 0.8rem; color: #94A3B8; font-weight: 600; margin-bottom: 8px;">
-                            1. Sentinel-1 SAR GRDH (C-Band Radar Amplitude)
+                with st.container(border=True):
+                    st.markdown("**MULTI-SENSOR VERIFICATION IMAGERY**")
+                    st.markdown(textwrap.dedent(f"""
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; box-sizing: border-box;">
+                        <div style="background-color: #0b1120; border: 1px solid #1e293b; border-radius: 6px; padding: 10px 12px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div style="font-family: monospace; font-size: 0.75rem; color: #94A3B8; font-weight: 600; margin-bottom: 6px;">
+                                1. Sentinel-1 SAR GRDH (Radar Amplitude)
+                            </div>
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: #020617;">
+                                <img src="data:image/png;base64,{sar_b64}" style="width: 100%; height: 185px; object-fit: cover; display: block;" alt="Sentinel-1 SAR" />
+                            </div>
+                            <div style="font-size: 0.7rem; color: #64748B; margin-top: 6px; text-align: center; font-family: monospace;">
+                                Radar dark spot (wave damping)
+                            </div>
                         </div>
-                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: #020617;">
-                            <img src="data:image/png;base64,{sar_b64}" style="width: 100%; height: 210px; object-fit: cover; display: block;" alt="Sentinel-1 SAR" />
-                        </div>
-                        <div style="font-size: 0.75rem; color: #64748B; margin-top: 8px; text-align: center;">
-                            Radar dark spot (wave damping)
+                        <div style="background-color: #0b1120; border: 1px solid #1e293b; border-radius: 6px; padding: 10px 12px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div style="font-family: monospace; font-size: 0.75rem; color: #94A3B8; font-weight: 600; margin-bottom: 6px;">
+                                2. Sentinel-2 Optical MSI (NDVI Index)
+                            </div>
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: #020617;">
+                                <img src="data:image/png;base64,{ndvi_b64}" style="width: 100%; height: 185px; object-fit: cover; display: block;" alt="Sentinel-2 Optical" />
+                            </div>
+                            <div style="font-size: 0.7rem; color: #64748B; margin-top: 6px; text-align: center; font-family: monospace;">
+                                Red: Algal Bloom | Blue: Mineral Oil
+                            </div>
                         </div>
                     </div>
-                    <div style="background-color: #0b1120; border: 1px solid #1e293b; border-radius: 6px; padding: 14px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div style="font-family: monospace; font-size: 0.8rem; color: #94A3B8; font-weight: 600; margin-bottom: 8px;">
-                            2. Sentinel-2 Optical MSI (False-Color NDVI Index)
-                        </div>
-                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: #020617;">
-                            <img src="data:image/png;base64,{ndvi_b64}" style="width: 100%; height: 210px; object-fit: cover; display: block;" alt="Sentinel-2 Optical" />
-                        </div>
-                        <div style="font-size: 0.75rem; color: #64748B; margin-top: 8px; text-align: center;">
-                            Red: Algal Bloom Lookalike | Blue: Mineral Oil
-                        </div>
+                    """).strip(), unsafe_allow_html=True)
+
+                with st.container(border=True):
+                    st.markdown("**FORENSIC CLASSIFICATION: MARPOL ANNEX II DISCHARGE**")
+                    st.markdown(textwrap.dedent("""
+                    <div style="font-size: 0.82rem; color: #CBD5E1; line-height: 1.5; margin-bottom: 6px;">
+                        The Sentinel-2 false-color optical index classifies this anomaly as yellow, mathematically ruling out petroleum-based mineral oil (blue) and biological algal blooms (red). Cross-referencing Sentinel-1 wave damping with ERA5 wind forcings (&gt;3m/s) confirms physical surface film presence.
                     </div>
+                    <div style="font-size: 0.75rem; color: #94A3B8; font-family: monospace; line-height: 1.6;">
+                        &bull; <strong style="color: #F8FAFC;">Primary Match:</strong> Edible liquid cargo (vegetable/palm oil) tank wash discharge.<br/>
+                        &bull; <strong style="color: #F8FAFC;">Secondary Match:</strong> Natural biogenic slick (zooplankton lipid release).
+                    </div>
+                    """).strip(), unsafe_allow_html=True)
+
+                st.markdown(textwrap.dedent(f"""
+                <div style="width:100%; background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.35); border-left:4px solid #10B981; border-radius:6px; padding:12px 16px; font-size:0.78rem; color:#E2E8F0; line-height:1.5; box-sizing:border-box; text-align:center; display:flex; align-items:center; justify-content:center;">
+                    <span><b style="color:#10B981;">Automated Spectral Filter:</b> Suppressed {unet_res.get('optical_lookalikes_filtered', 1)} biogenic lookalike patches in optical NDVI spectrum.</span>
                 </div>
+                """).strip(), unsafe_allow_html=True)
 
-                <!-- Forensic Classification Card (Yellow Anomaly Interpretation) -->
-                <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid #3B82F6; border-left: 4px solid #3B82F6; border-radius: 6px; padding: 14px 16px; width: 100%; box-sizing: border-box; margin-bottom: 16px;">
-                    <div style="font-size: 0.95rem; font-weight: 700; color: #F8FAFC; margin-bottom: 8px; font-family: 'Inter', sans-serif;">
-                        Forensic Classification: MARPOL Annex II Discharge
-                    </div>
-                    <div style="font-size: 0.85rem; color: #CBD5E1; line-height: 1.55; margin-bottom: 10px;">
-                        The Sentinel-2 false-color optical index classifies this anomaly as yellow, mathematically ruling out petroleum-based mineral oil (blue) and biological algal blooms (red). Cross-referencing the Sentinel-1 wave damping (dark spot) with ERA5 wind forcings (&gt;3m/s) confirms the presence of a physical surface film.
-                    </div>
-                    <ul style="font-size: 0.825rem; color: #94A3B8; line-height: 1.6; margin: 0; padding-left: 20px;">
-                        <li><strong style="color: #F8FAFC;">Primary Match:</strong> Edible liquid cargo (vegetable/palm oil) tank wash discharge.</li>
-                        <li><strong style="color: #F8FAFC;">Secondary Match:</strong> Natural biogenic slick (zooplankton lipid release).</li>
-                    </ul>
-                </div>
-                """, unsafe_allow_html=True)
 
-                st.info(f"💡 Automated Filter: Suppressed {unet_res.get('optical_lookalikes_filtered', 1)} biogenic lookalike patches in optical NDVI spectrum.")
+    def render_unet_drift_stage():
+        with st.container(border=True):
+            st.subheader("Neural Segmentation & Hydrodynamic Drift Model", divider="blue")
+            st.caption("U-Net deep convolutional inference (trained on Zenodo SAR Dataset #4124976) with Fay-spreading slick age calculation and reversed Lagrangian advection vectors.")
 
-    # =========================================================================
-    # TAB: STAGE 2: U-NET AI & HYDRODYNAMICS
-    # =========================================================================
-    if is_officer:
-        with tab_ai:
-            st.markdown("""
-            <div class="hud-card">
-                <b style="color:#00f0ff; font-family:monospace;">STAGE 2: U-NET SEMANTIC SEGMENTATION & HYDRODYNAMIC BACKCASTING</b>
-                <p style="color:#cbd5e1; font-size:0.85rem; margin-top:4px;">
-                    Executes U-Net deep convolutional inference (trained on Zenodo SAR Dataset #4124976) to extract slick contours (>94.8% confidence),
-                    calculates Fay-spreading slick age, and reverses Lagrangian advection vectors to pinpoint exact emission origin.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-            c_ai1, c_ai2 = st.columns([1.2, 1.8])
+            meta = unet_res["model_metadata"]
+            c_ai1, c_ai2 = st.columns([1.1, 1.9])
             with c_ai1:
-                st.markdown("<b style='color:#38bdf8; font-family:monospace;'>Zenodo U-Net Benchmark Metrics</b>", unsafe_allow_html=True)
-                meta = unet_res["model_metadata"]
-                st.markdown(f"""
-                <div style="background-color:#020617; border:1px solid #1e293b; padding:12px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#cbd5e1;">
-                    <b>Architecture:</b> {meta['architecture']}<br/>
-                    <b>Training Corpus:</b> {meta['training_dataset']}<br/>
-                    <b>Validation Dice:</b> <span style="color:#10b981;">{meta['validation_dice_coefficient']*100:.2f}%</span><br/>
-                    <b>Mean IoU:</b> <span style="color:#00f0ff;">{meta['mean_iou']*100:.2f}%</span><br/>
-                    <b>Precision / Recall:</b> {meta['precision']*100:.1f}% / {meta['recall']*100:.1f}%<br/>
-                    <b>Weights Checksum:</b> <span style="font-size:0.65rem; color:#64748b;">{meta['weights_hash'][:28]}...</span>
-                </div>
-                """, unsafe_allow_html=True)
+                with st.container(border=True):
+                    st.markdown("**NEURAL ARCHITECTURE & VALIDATION METRICS**")
+                    st.markdown(textwrap.dedent(f"""
+                    <div style="font-family:monospace; font-size:0.75rem; color:#cbd5e1; line-height:1.6;">
+                        <div><b>Architecture:</b> {meta['architecture']}</div>
+                        <div><b>Training Corpus:</b> {meta['training_dataset']}</div>
+                        <div><b>Validation Dice:</b> <span style="color:#10b981; font-weight:600;">{meta['validation_dice_coefficient']*100:.2f}%</span></div>
+                        <div><b>Mean IoU:</b> <span style="color:#38BDF8; font-weight:600;">{meta['mean_iou']*100:.2f}%</span></div>
+                        <div><b>Precision / Recall:</b> {meta['precision']*100:.1f}% / {meta['recall']*100:.1f}%</div>
+                        <div><b>Weights SHA-256:</b> <code style="font-size:0.65rem; color:#64748b;">{meta['weights_hash'][:22]}...</code></div>
+                    </div>
+                    """).strip(), unsafe_allow_html=True)
 
-                st.markdown("<br/><b style='color:#38bdf8; font-family:monospace;'>Fay Spreading Theory & Age Estimation</b>", unsafe_allow_html=True)
-                st.markdown(f"""
-                <div style="background-color:#0b1120; border:1px solid #1e293b; padding:12px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#cbd5e1;">
-                    <b>Regime:</b> {unet_res.get('fay_regime', 'Phase 2 (Gravity-Viscous)')}<br/>
-                    <b>Observed Surface Area:</b> <span style="color:#00f0ff;">{unet_res['total_area_sq_km']} sq km</span><br/>
-                    <b>Calculated Slick Age:</b> <span style="color:#ffaa00;">{unet_res.get('estimated_age_hours', 12.0)} hours prior</span><br/>
-                    <b>Estimated Evaporation Loss:</b> ~30.5%
-                </div>
-                """, unsafe_allow_html=True)
+                with st.container(border=True):
+                    st.markdown("**FAY WEATHERING & SPREADING KINEMATICS**")
+                    st.markdown(textwrap.dedent(f"""
+                    <div style="font-family:monospace; font-size:0.75rem; color:#cbd5e1; line-height:1.6;">
+                        <div><b>Spreading Regime:</b> {unet_res.get('fay_regime', 'Phase 3 (Surface Tension-Viscous)')}</div>
+                        <div><b>Observed Surface Area:</b> <span style="color:#38BDF8; font-weight:600;">{unet_res['total_area_sq_km']} sq km</span></div>
+                        <div><b>Calculated Slick Age:</b> <span style="color:#F59E0B; font-weight:600;">{unet_res.get('estimated_age_hours', 12.0)} hours prior</span></div>
+                        <div><b>Evaporation Loss:</b> ~30.5%</div>
+                    </div>
+                    """).strip(), unsafe_allow_html=True)
 
             with c_ai2:
-                st.markdown("<b style='color:#38bdf8; font-family:monospace;'>Segmentation Masks & Backcast Particles</b>", unsafe_allow_html=True)
-                pcol1, pcol2 = st.columns(2)
-                with pcol1:
-                    # Color-code probability mask
-                    prob_display = (unet_res["probability_map"] * 255).astype(np.uint8)
-                    prob_heat = cv2.applyColorMap(prob_display, cv2.COLORMAP_INFERNO)
-                    st.image(prob_heat, caption="U-Net Confidence Heatmap (>94.8%)", use_container_width=True)
-                with pcol2:
-                    st.image(unet_res["binary_mask"] * 255, caption="Cleaned Binary Extraction Mask", use_container_width=True)
+                with st.container(border=True):
+                    st.markdown("**SEGMENTATION CONFIDENCE MASKS**")
+                    pcol1, pcol2 = st.columns(2)
+                    with pcol1:
+                        prob_display = (unet_res["probability_map"] * 255).astype(np.uint8)
+                        prob_heat = cv2.applyColorMap(prob_display, cv2.COLORMAP_INFERNO)
+                        st.image(prob_heat, caption="U-Net Confidence Heatmap (>94.8%)", use_container_width=True)
+                    with pcol2:
+                        st.image(unet_res["binary_mask"] * 255, caption="Cleaned Binary Extraction Mask", use_container_width=True)
 
+            with st.container(border=True):
+                st.markdown("**PINPOINTED EMISSION ORIGIN & LAGRANGIAN BACKCAST VECTOR**")
+                st.markdown(textwrap.dedent(f"""
+                <div style="font-family:monospace; font-size:0.78rem; color:#cbd5e1;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                        <div><b>ORIGIN COORDINATES:</b> <span style="color:#F59E0B; font-weight:700;">{backcast_res['origin_release_coord'][0]:.4f}°N, {backcast_res['origin_release_coord'][1]:.4f}°E</span></div>
+                        <div><b>NET DRIFT SPEED:</b> <span style="color:#38BDF8;">{backcast_res['net_drift_speed_knots']} kts</span></div>
+                    </div>
+                    <div style="margin-top:4px; font-size:0.72rem; color:#94a3b8;">
+                        <b>UNCERTAINTY ENVELOPE:</b> &plusmn;{backcast_res['origin_uncertainty_meters']} meters &bull; <b>PARTICLE ADVECTION:</b> 400 Reversed Lagrangian Nodes
+                    </div>
+                </div>
+                """).strip(), unsafe_allow_html=True)
+
+
+    def render_ais_audit_stage():
+        with st.container(border=True):
+            st.subheader("Zero-Trust AIS Telemetry Audit & Counter-Spoofing", divider="blue")
+            st.caption("Adversarial Defense Engine adhering to ITU-R M.1371 schemas. Cross-references radio transponder transmissions against physical Sentinel-1 SAR hull reflections to expose GPS spoofing and Dark Ships.")
+
+            with st.container(border=True):
+                st.markdown("**ACTIVE CYBER & MARITIME THREAT NOTIFICATIONS**")
+                for alert in ais_res["security_alerts"]:
+                    is_crit = "CRITICAL" in alert["level"]
+                    card_class = "hud-card-alert" if is_crit else "hud-card"
+                    st.markdown(f"""
+                    <div class="{card_class}" style="margin-bottom:8px;">
+                        <div style="display:flex; justify-content:space-between; font-family:monospace; font-size:0.8rem;">
+                            <b style="color:#ef4444;"><span class="led-alert"></span>[{alert['code']}]</b>
+                            <span style="color:#94a3b8;">{alert.get('timestamp', 'LIVE SENSOR PASS')}</span>
+                        </div>
+                        <div style="font-size:0.82rem; color:#f8fafc; margin-top:4px;">
+                            {alert['details']}
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+            with st.container(border=True):
+                st.markdown("**TARGET VESSEL ATTRIBUTION MATRIX (RANKED BY PROBABILISTIC LIABILITY)**")
+                v_rows = []
+                for v in ais_res["audited_vessels"]:
+                    v_rows.append({
+                        "MMSI": v["mmsi"],
+                        "Vessel Name": v["vessel_name"],
+                        "Type": v["vessel_type"],
+                        "Flag": v["flag"],
+                        "Max SOG (kts)": f"{v['max_sog']:.1f}",
+                        "Dist to Origin": f"{v['closest_dist_to_origin_km']} km",
+                        "Attribution": f"{v['attribution_score']}%",
+                        "Kinematic Status": "🚨 GPS SPOOFED" if v["is_spoofed"] else ("⚠️ DELIBERATE AIS GAP" if v["has_gap"] else "✅ COMPLIANT")
+                    })
+                st.dataframe(pd.DataFrame(v_rows), use_container_width=True, hide_index=True)
+
+
+    def render_evidence_vault_stage():
+        with st.container(border=True):
+            st.subheader("Cryptographic Chain of Custody (ISO/IEC 27037)", divider="blue")
+            st.caption("Adheres strictly to ISO/IEC 27037 standards for digital evidence preservation. Locks satellite telemetry, spatial polygon coordinates, backcasting vectors, and suspect MMSI strings into an immutable SHA-256 ledger.")
+
+            ledger_engine = ForensicLedgerEngine()
+
+            with st.container(border=True):
                 st.markdown(f"""
-                <div style="background-color:#020617; border:1px solid #1e293b; padding:10px; border-radius:4px; font-family:monospace; font-size:0.75rem; color:#94a3b8; margin-top:8px;">
-                    <b>PINPOINTED EMISSION ORIGIN:</b> <span style="color:#ffaa00;">{backcast_res['origin_release_coord'][0]:.4f}°N, {backcast_res['origin_release_coord'][1]:.4f}°E</span><br/>
-                    <b>UNCERTAINTY ENVELOPE:</b> &plusmn;{backcast_res['origin_uncertainty_meters']} meters &bull; <b>DRIFT SPEED:</b> {backcast_res['net_drift_speed_knots']} knots
+                <div style="font-family:monospace;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="color:#38BDF8; font-weight:700;">DOCKET ID: {docket['docket_id']}</span>
+                        <span style="background-color:#064e3b; color:#10b981; padding:3px 8px; border-radius:3px; font-size:0.75rem;">
+                            ISO/IEC 27037 SEALED & IMMUTABLE
+                        </span>
+                    </div>
+                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:6px;">
+                        <b>MASTER SHA-256 CHECKSUM:</b> <code style="color:#38bdf8;">{docket['master_seal_hash']}</code>
+                    </div>
+                    <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">
+                        Sealed by: {docket['sealing_officer']} [{docket['service_number']}] &bull; Time: {docket['timestamp_sealed']}
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
 
-    # =========================================================================
-    # TAB: STAGE 3: ZERO-TRUST AIS & SPOOFING RADAR
-    # =========================================================================
-    ais_tab_context = tab_audit if is_judge else tab_ais
-    with ais_tab_context:
-        st.markdown("""
-        <div class="hud-card">
-            <b style="color:#00f0ff; font-family:monospace;">STAGE 3: ZERO-TRUST AIS TELEMETRY AUDIT & ADVERSARIAL COUNTER-SPOOFING</b>
-            <p style="color:#cbd5e1; font-size:0.85rem; margin-top:4px;">
-                Adversarial Defense Engine adhering to ITU-R M.1371 schemas.
-                Cross-references radio transponder transmissions against physical Sentinel-1 SAR hull reflections to expose GPS spoofing and 'Dark Ships'.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+            with st.container(border=True):
+                st.markdown("**INTERACTIVE ADVERSARIAL BIT-TAMPER VALIDATOR**")
+                st.caption("Simulate an adversarial attempt to alter evidence data (e.g. changing suspect coordinates or clearance records) to verify that the SHA-256 seal immediately invalidates the docket.")
 
-        # Security Alerts Ticker
-        st.markdown("<b style='color:#ef4444; font-family:monospace;'>ACTIVE CYBER & MARITIME THREAT NOTIFICATIONS</b>", unsafe_allow_html=True)
-        for alert in ais_res["security_alerts"]:
-            is_crit = "CRITICAL" in alert["level"]
-            card_class = "hud-card-alert" if is_crit else "hud-card"
-            st.markdown(f"""
-            <div class="{card_class}">
-                <div style="display:flex; justify-content:space-between; font-family:monospace; font-size:0.8rem;">
-                    <b style="color:#ef4444;"><span class="led-alert"></span>[{alert['code']}]</b>
-                    <span style="color:#94a3b8;">{alert.get('timestamp', 'LIVE SENSOR PASS')}</span>
-                </div>
-                <div style="font-size:0.85rem; color:#f8fafc; margin-top:4px;">
-                    {alert['details']}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+                tc1, tc2 = st.columns([1.5, 1])
+                with tc1:
+                    tamper_mode = st.radio(
+                        "Select Integrity Verification Mode:",
+                        [
+                            "✅ Normal Verification (Original Unaltered Evidence)",
+                            "⚠️ Adversarial Tamper: Alter Suspect Attribution Checksum by 1 character",
+                            "⚠️ Adversarial Tamper: Modify Jurisdiction / Sealing Authority"
+                        ]
+                    )
 
-        # Suspect Attribution Table
-        st.markdown("<br/><b style='color:#00f0ff; font-family:monospace;'>VESSEL ATTRIBUTION MATRIX (RANKED BY PROBABILISTIC LIABILITY)</b>", unsafe_allow_html=True)
-        v_rows = []
-        for v in ais_res["audited_vessels"]:
-            v_rows.append({
-                "MMSI": v["mmsi"],
-                "Vessel Name": v["vessel_name"],
-                "Type": v["vessel_type"],
-                "Flag": v["flag"],
-                "Max SOG (kts)": f"{v['max_sog']:.1f}",
-                "Dist to Origin": f"{v['closest_dist_to_origin_km']} km",
-                "Attribution": f"{v['attribution_score']}%",
-                "Kinematic Status": "🚨 GPS SPOOFED" if v["is_spoofed"] else ("⚠️ DELIBERATE AIS GAP" if v["has_gap"] else "✅ COMPLIANT")
-            })
-        st.dataframe(pd.DataFrame(v_rows), use_container_width=True)
+                with tc2:
+                    if "Normal" in tamper_mode:
+                        verification = ledger_engine.verify_tamper_integrity(docket)
+                    elif "Attribution" in tamper_mode:
+                        verification = ledger_engine.verify_tamper_integrity(
+                            docket,
+                            tampered_key="suspect_attribution_hash",
+                            tampered_value="f" * 64
+                        )
+                    else:
+                        verification = ledger_engine.verify_tamper_integrity(
+                            docket,
+                            tampered_key="jurisdiction",
+                            tampered_value="Unverified Foreign Maritime Authority"
+                        )
 
-    # =========================================================================
-    # TAB: STAGE 4: ISO/IEC 27037 EVIDENCE VAULT & BIT-TAMPER INSPECTOR
-    # =========================================================================
-    with tab_vault:
-        st.markdown("""
-        <div class="hud-card">
-            <b style="color:#00f0ff; font-family:monospace;">STAGE 4: ISO/IEC 27037 FORENSIC EVIDENCE VAULT & CRYPTOGRAPHIC TAMPER PROOF</b>
-            <p style="color:#cbd5e1; font-size:0.85rem; margin-top:4px;">
-                Adheres strictly to ISO/IEC 27037 standards for digital evidence preservation.
-                Locks satellite telemetry, spatial polygon coordinates, backcasting vectors, and suspect MMSI strings into an immutable SHA-256 ledger.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+                if verification["seal_intact"]:
+                    st.markdown(f"""
+                    <div class="hud-card-success">
+                        <b style="color:#10b981;">{verification['verification_status']}</b><br/>
+                        <span style="font-family:monospace; font-size:0.8rem; color:#cbd5e1;">
+                            Original Hash: <code>{verification['original_sha256_seal']}</code><br/>
+                            Recomputed Hash: <code>{verification['recomputed_sha256_hash']}</code>
+                        </span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown(f"""
+                    <div class="hud-card-alert">
+                        <b style="color:#ef4444;"><span class="led-alert"></span>{verification['verification_status']}</b><br/>
+                        <span style="font-family:monospace; font-size:0.8rem; color:#cbd5e1;">
+                            Original Expected: <code>{verification['original_sha256_seal']}</code><br/>
+                            Recomputed Tampered: <code style="color:#ef4444;">{verification['recomputed_sha256_hash']}</code><br/>
+                            Verdict: <b style="color:#ef4444;">{verification['iso_27037_verdict']}</b> (Court admissibility revoked!)
+                        </span>
+                    </div>
+                    """, unsafe_allow_html=True)
 
-        ledger_engine = ForensicLedgerEngine()
+            with st.container(border=True):
+                st.markdown("**DIGITAL CHAIN OF CUSTODY LOG (ISO/IEC 27037 CLAUSE 6.4)**")
+                custody_data = []
+                for c in docket.get("chain_of_custody", []):
+                    custody_data.append({
+                        "Seq": c["sequence"],
+                        "Event Description": c["event"],
+                        "Authority / Module": c["authority"],
+                        "Timestamp (UTC)": c["time"],
+                        "SHA-256 Checksum": c["hash"]
+                    })
+                st.dataframe(pd.DataFrame(custody_data), use_container_width=True, hide_index=True)
 
-        # Top Master Seal Banner
-        st.markdown(f"""
-        <div style="background-color:#020617; border:1px solid #00f0ff; padding:14px; border-radius:6px; margin-bottom:15px; font-family:monospace;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="color:#00f0ff; font-weight:700;">DOCKET ID: {docket['docket_id']}</span>
-                <span style="background-color:#064e3b; color:#10b981; padding:3px 8px; border-radius:3px; font-size:0.75rem;">
-                    ISO/IEC 27037 SEALED & IMMUTABLE
-                </span>
-            </div>
-            <div style="font-size:0.8rem; color:#94a3b8; margin-top:6px;">
-                <b>MASTER SHA-256 CHECKSUM:</b> <code style="color:#38bdf8;">{docket['master_seal_hash']}</code>
-            </div>
-            <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">
-                Sealed by: {docket['sealing_officer']} [{docket['service_number']}] &bull; Time: {docket['timestamp_sealed']}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+            with st.container(border=True):
+                st.markdown("**OFFICIAL COURT-ADMISSIBLE DOSSIER EXPORT**")
+                pdf_bytes = ledger_engine.generate_court_dossier_pdf(docket)
 
-        # Interactive Tamper-Proof Testing Lab
-        st.markdown("<b style='color:#ffaa00; font-family:monospace;'>🔬 INTERACTIVE ADVERSARIAL BIT-TAMPER VALIDATOR</b>", unsafe_allow_html=True)
-        st.caption("Simulate an adversarial attempt to alter evidence data (e.g. changing suspect coordinates or clearance records) to verify that the SHA-256 seal immediately invalidates the docket.")
+                cd1, cd2 = st.columns([1.5, 1])
+                with cd1:
+                    st.download_button(
+                        label="📥 DOWNLOAD ISO/IEC 27037 LEGAL EVIDENCE DOSSIER (PDF)",
+                        data=pdf_bytes,
+                        file_name=f"{docket['docket_id']}_EVIDENCE_DOSSIER.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+                with cd2:
+                    st.download_button(
+                        label="📥 EXPORT RAW EVIDENCE LEDGER (JSON)",
+                        data=json.dumps(docket, indent=2),
+                        file_name=f"{docket['docket_id']}_RAW_LEDGER.json",
+                        mime="application/json",
+                        use_container_width=True
+                    )
 
-        tc1, tc2 = st.columns([1.5, 1])
-        with tc1:
-            tamper_mode = st.radio(
-                "Select Integrity Verification Mode:",
-                [
-                    "✅ Normal Verification (Original Unaltered Evidence)",
-                    "⚠️ Adversarial Tamper: Alter Suspect Attribution Checksum by 1 character",
-                    "⚠️ Adversarial Tamper: Modify Jurisdiction / Sealing Authority"
-                ]
-            )
 
-        with tc2:
-            st.markdown("<br/>", unsafe_allow_html=True)
-            if "Normal" in tamper_mode:
-                verification = ledger_engine.verify_tamper_integrity(docket)
-            elif "Attribution" in tamper_mode:
-                verification = ledger_engine.verify_tamper_integrity(
-                    docket,
-                    tampered_key="suspect_attribution_hash",
-                    tampered_value="f" * 64
-                )
-            else:
-                verification = ledger_engine.verify_tamper_integrity(
-                    docket,
-                    tampered_key="jurisdiction",
-                    tampered_value="Unverified Foreign Maritime Authority"
-                )
-
-        if verification["seal_intact"]:
-            st.markdown(f"""
-            <div class="hud-card-success">
-                <b style="color:#10b981;">{verification['verification_status']}</b><br/>
-                <span style="font-family:monospace; font-size:0.8rem; color:#cbd5e1;">
-                    Original Hash: <code>{verification['original_sha256_seal']}</code><br/>
-                    Recomputed Hash: <code>{verification['recomputed_sha256_hash']}</code>
-                </span>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(f"""
-            <div class="hud-card-alert">
-                <b style="color:#ef4444;"><span class="led-alert"></span>{verification['verification_status']}</b><br/>
-                <span style="font-family:monospace; font-size:0.8rem; color:#cbd5e1;">
-                    Original Expected: <code>{verification['original_sha256_seal']}</code><br/>
-                    Recomputed Tampered: <code style="color:#ef4444;">{verification['recomputed_sha256_hash']}</code><br/>
-                    Verdict: <b style="color:#ef4444;">{verification['iso_27037_verdict']}</b> (Court admissibility revoked!)
-                </span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        # Digital Chain of Custody Table
-        st.markdown("<br/><b style='color:#00f0ff; font-family:monospace;'>DIGITAL CHAIN OF CUSTODY LOG (ISO/IEC 27037 CLAUSE 6.4)</b>", unsafe_allow_html=True)
-        custody_data = []
-        for c in docket.get("chain_of_custody", []):
-            custody_data.append({
-                "Seq": c["sequence"],
-                "Event Description": c["event"],
-                "Authority / Module": c["authority"],
-                "Timestamp (UTC)": c["time"],
-                "SHA-256 Checksum": c["hash"]
-            })
-        st.dataframe(pd.DataFrame(custody_data), use_container_width=True)
-
-        # Export Court-Admissible PDF Dossier
-        st.markdown("<br/><b style='color:#00f0ff; font-family:monospace;'>OFFICIAL COURT-ADMISSIBLE DOSSIER EXPORT</b>", unsafe_allow_html=True)
-        pdf_bytes = ledger_engine.generate_court_dossier_pdf(docket)
-
-        cd1, cd2 = st.columns([1.5, 1])
-        with cd1:
-            st.download_button(
-                label="📥 DOWNLOAD ISO/IEC 27037 LEGAL EVIDENCE DOSSIER (PDF)",
-                data=pdf_bytes,
-                file_name=f"{docket['docket_id']}_EVIDENCE_DOSSIER.pdf",
-                mime="application/pdf"
-            )
-        with cd2:
-            st.download_button(
-                label="📥 EXPORT RAW EVIDENCE LEDGER (JSON)",
-                data=json.dumps(docket, indent=2),
-                file_name=f"{docket['docket_id']}_RAW_LEDGER.json",
-                mime="application/json"
-            )
-
-    # =========================================================================
-    # TAB: STAGE 5: TACTICAL EDGE INTEROPERABILITY & REROUTING
-    # =========================================================================
-    if is_officer:
-        with tab_reroute:
-            st.markdown("""
-            <div class="hud-card">
-                <b style="color:#00f0ff; font-family:monospace;">STAGE 5: TACTICAL EDGE INTEROPERABILITY & AUTOMATED SAFETY REROUTING</b>
-                <p style="color:#cbd5e1; font-size:0.85rem; margin-top:4px;">
-                    Lightweight edge execution for port command laptops (Mumbai / Kochi).
-                    Dynamically generates 5 NM navigation exclusion zones, computes collision avoidance divert waypoints,
-                    and dispatches simulated VHF Navtex and Telegram emergency alert broadcasts.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
+    def render_reroute_dispatch_stage():
+        with st.container(border=True):
+            st.subheader("Autonomous Vessel Reroute & Edge Dispatch", divider="blue")
+            st.caption("Lightweight edge execution computing 5 NM exclusion corridor, vessel divert waypoints, and automated VHF Navtex emergency broadcasts.")
 
             rerouter = TacticalReroutingEngine(buffer_radius_km=5.0)
             ex_zone = st.session_state["exclusion_zone"]
@@ -1834,60 +1801,86 @@ def render_command_dashboard():
 
             c_rr1, c_rr2 = st.columns(2)
             with c_rr1:
-                st.markdown("<b style='color:#38bdf8; font-family:monospace;'>Dynamic Exclusion Corridor</b>", unsafe_allow_html=True)
-                st.markdown(f"""
-                <div style="background-color:#0b1120; border:1px solid #1e293b; padding:14px 16px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#cbd5e1; min-height:140px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between;">
-                    <div><b>Zone Status:</b> <span style="color:#ef4444;">{ex_zone['threat_status']}</span></div>
-                    <div><b>Mandatory Standoff:</b> {ex_zone['safety_buffer_nm']} Nautical Miles</div>
-                    <div><b>Advisory:</b> {ex_zone['advisory']}</div>
-                    <div><b>Corridor Bounds:</b> 4 Geodetic Vertices</div>
-                </div>
-                """, unsafe_allow_html=True)
-
-                st.markdown("<div style='margin-top:16px; margin-bottom:6px;'><b style='color:#38bdf8; font-family:monospace;'>Automated VHF / Telegram Emergency Dispatch</b></div>", unsafe_allow_html=True)
-                if st.button("🚨 TRIGGER EMERGENCY MARITIME SAFETY BROADCAST", use_container_width=True):
-                    st.session_state["broadcast_dispatched"] = True
-                    st.toast("VHF NAVTEX & Telegram Emergency Broadcast Dispatched!", icon="📡")
-
-                if st.session_state.get("broadcast_dispatched", False):
-                    dispatch = rerouter.dispatch_vhf_navtex_broadcast(docket["docket_id"], ex_zone, reroutes)
-                    st.markdown(f"""
-                    <div class="hud-card-success" style="margin-top:10px;">
-                        <b style="color:#10b981;">BROADCAST TRANSMISSION CONFIRMED</b><br/>
-                        <span style="font-family:monospace; font-size:0.75rem; color:#cbd5e1;">
-                            Channels: {', '.join(dispatch['channels'])}<br/>
-                            Telegram Channel: {dispatch['telegram_dispatch']['channel']}<br/>
-                            Vessels Alerted: {len(dispatch['telegram_dispatch']['vessels_alerted'])}
-                        </span>
+                with st.container(border=True):
+                    st.markdown("**DYNAMIC EXCLUSION CORRIDOR**")
+                    st.markdown(textwrap.dedent(f"""
+                    <div style="font-family:monospace; font-size:0.8rem; color:#cbd5e1; line-height:1.6;">
+                        <div><b>Zone Status:</b> <span style="color:#ef4444;">{ex_zone['threat_status']}</span></div>
+                        <div><b>Mandatory Standoff:</b> {ex_zone['safety_buffer_nm']} Nautical Miles</div>
+                        <div><b>Advisory:</b> {ex_zone['advisory']}</div>
+                        <div><b>Corridor Bounds:</b> 4 Geodetic Vertices</div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    """).strip(), unsafe_allow_html=True)
+
+                with st.container(border=True):
+                    st.markdown("**AUTOMATED EMERGENCY SAFETY DISPATCH**")
+                    if st.button("🚨 TRIGGER EMERGENCY MARITIME SAFETY BROADCAST", use_container_width=True):
+                        st.session_state["broadcast_dispatched"] = True
+                        st.toast("VHF NAVTEX & Telegram Emergency Broadcast Dispatched!", icon="📡")
+
+                    if st.session_state.get("broadcast_dispatched", False):
+                        dispatch = rerouter.dispatch_vhf_navtex_broadcast(docket["docket_id"], ex_zone, reroutes)
+                        st.markdown(f"""
+                        <div class="hud-card-success" style="margin-top:10px;">
+                            <b style="color:#10b981;">BROADCAST TRANSMISSION CONFIRMED</b><br/>
+                            <span style="font-family:monospace; font-size:0.75rem; color:#cbd5e1;">
+                                Channels: {', '.join(dispatch['channels'])}<br/>
+                                Telegram Channel: {dispatch['telegram_dispatch']['channel']}<br/>
+                                Vessels Alerted: {len(dispatch['telegram_dispatch']['vessels_alerted'])}
+                            </span>
+                        </div>
+                        """, unsafe_allow_html=True)
 
             with c_rr2:
-                st.markdown("<b style='color:#38bdf8; font-family:monospace;'>Computed Vessel Divert Waypoints</b>", unsafe_allow_html=True)
-                for r in reroutes:
-                    st.markdown(f"""
-                    <div style="background-color:#0b1120; border:1px solid #1e293b; padding:14px 16px; border-radius:6px; font-family:monospace; font-size:0.8rem; min-height:140px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between;">
-                        <div style="display:flex; justify-content:space-between;">
-                            <b style="color:#00f0ff;">{r['vessel_name']} (MMSI {r['mmsi']})</b>
-                            <span style="color:#f97316;">{r['urgency']}</span>
+                with st.container(border=True):
+                    st.markdown("**COMPUTED VESSEL COLLISION AVOIDANCE REROUTES**")
+                    for r in reroutes:
+                        st.markdown(f"""
+                        <div style="background-color:#0b1120; border:1px solid #1e293b; padding:10px 12px; border-radius:6px; font-family:monospace; font-size:0.78rem; margin-bottom:8px;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <b style="color:#38BDF8;">{r['vessel_name']} (MMSI {r['mmsi']})</b>
+                                <span style="color:#f97316;">{r['urgency']}</span>
+                            </div>
+                            <div style="color:#94a3b8; font-size:0.72rem; margin-top:6px;">
+                                Distance to Spill: <b>{r['dist_to_spill_km']} km</b><br/>
+                                Divert Waypoint: <span style="color:#10b981;">{r['diversion_waypoint'][0]}°N, {r['diversion_waypoint'][1]}°E</span><br/>
+                                Course Change: <span style="color:#cbd5e1;">{r['reroute_instruction']}</span>
+                            </div>
                         </div>
-                        <div style="color:#94a3b8; font-size:0.75rem; margin-top:8px;">
-                            Distance to Spill: <b>{r['dist_to_spill_km']} km</b><br/>
-                            Divert Waypoint: <span style="color:#10b981;">{r['diversion_waypoint'][0]}°N, {r['diversion_waypoint'][1]}°E</span><br/>
-                            Course Change: <span style="color:#cbd5e1;">{r['reroute_instruction']}</span>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                        """, unsafe_allow_html=True)
+    # --- MAIN WORKBENCH CONTENT (FULL WIDTH) ---
+    unet_res = st.session_state["unet_results"]
+    ais_res = st.session_state["ais_results"]
+    backcast_res = st.session_state["backcast_results"]
+    docket = st.session_state["docket"]
+
+    # Summary Metrics Row (Strictly aligned in a single horizontal row of 4 columns)
+    with st.container(border=True):
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("OIL SLICK AREA", f"{unet_res['total_area_sq_km']} km²", f"Confidence {unet_res['mean_confidence_score']*100:.1f}%")
+        with col2:
+            st.metric("SPREAD AGE", f"{unet_res.get('estimated_age_hours', 12.0)} hrs", unet_res.get("fay_regime", "Viscous"))
+        with col3:
+            st.metric("TRACKED VESSELS", f"{ais_res['total_vessels_tracked']}", f"{ais_res['spoofed_vessels_detected']} GPS Spoofed")
+        with col4:
+            st.metric("DARK SHIPS FOUND", f"{ais_res['dark_vessels_detected']}", "SAR Hull Scan Confirmed")
+
+    # Active Stage Renderer (2D Map is First View by Default)
+    if "Common Operating Picture" in active_stage or "COP" in active_stage or "Tactical" in active_stage:
+        render_tactical_cop_stage()
+    elif "Copernicus" in active_stage or "WMS" in active_stage:
+        render_satellite_wms_stage()
+    elif "Neural" in active_stage or "Segmentation" in active_stage or "Drift" in active_stage:
+        render_unet_drift_stage()
+    elif "Zero-Trust" in active_stage or "AIS" in active_stage:
+        render_ais_audit_stage()
+    elif "Chain of Custody" in active_stage or "Cryptographic" in active_stage or "Evidence" in active_stage or "Vault" in active_stage:
+        render_evidence_vault_stage()
+    elif "Reroute" in active_stage or "Dispatch" in active_stage:
+        render_reroute_dispatch_stage()
 
 
-# =============================================================================
-# MAIN APP ENTRY POINT
-# =============================================================================
-
-
-# =============================================================================
-# MAIN APP ENTRY POINT
-# =============================================================================
 def main():
     if "page" in st.query_params:
         target = st.query_params["page"]
